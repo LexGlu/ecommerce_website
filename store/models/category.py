@@ -4,7 +4,7 @@ from autoslug import AutoSlugField
 
 class Category(models.Model):
     name = models.CharField(max_length=128)
-    slug = AutoSlugField(populate_from='name', unique=True)  # will be implemented in the future
+    slug = AutoSlugField(populate_from='name', unique=True)
     description = models.TextField(blank=True)
 
     class Meta:

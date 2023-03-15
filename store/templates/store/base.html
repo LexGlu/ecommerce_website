@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'store/images/favicon.ico' %}">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'store/css/bootstrap.css' %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'store/css/custom.css' %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-light" id="navbar">
+            <div id="navbar_main">
+                <a class="navbar-brand" href="{% url 'store:home' %}">
+                    <img src="{% static 'store/images/logo.png' %}"
+                         width="30" height="30"
+                         class="d-inline-block align-top"
+                         alt="logo">
+                    PineApple Store
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <footer>
+        &copy 2023 PineApple Store. All rights not reserved.
+    </footer>
+</body>
+</html>

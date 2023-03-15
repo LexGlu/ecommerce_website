@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+{% load custom_filter %}
+
+{% block title %}
+    {{ products.category.name }}
+{% endblock %}
+
+{% block content %}
+<h4>{{ product.name }}</h4>
+    <img class="img-fluid" src="{{product.image.url}}" alt="product image">
+<p>{{ product.description }}</p>
+<p>{{ product.price | currency}} UAH</p>
+<p>{{ product.category.name }}</p>
+<p>Goods left in stock: {{ product.stock }} item(s) </p>
+
+
+{% endblock %}
