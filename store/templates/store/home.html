@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<h3>Hi, here will be the homepage of the store.</h3>
+
     {% for category in categories %}
     <li>
         <a href="{% url 'store:category' category.slug %}">{{ category.name }}</a>

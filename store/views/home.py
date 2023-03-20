@@ -8,6 +8,4 @@ class HomeView(View):
 
     @staticmethod
     def get(request):
-        categories = Category.objects.all()
-        context = {'categories': categories}
-        return render(request, 'store/home.html', context)
+        return render(request, 'store/home.html')

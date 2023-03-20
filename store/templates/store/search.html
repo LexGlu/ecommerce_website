@@ -1,0 +1,22 @@
+{% extends 'store/base.html' %}
+
+{% block title %} Search result: "{{ query }}" | Search {% endblock %}
+
+{% block content %}
+    {% if not products %}
+    <h1> No products found for "{{ query }}" </h1>
+    {% else %}
+        {% for product in products %}
+            <div class="col-md-4">
+                    <a href="{% url 'store:product' product.id %}" class="thumbnail">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    </a>
+                    <div class="caption">
+                        <h4>{{ product.name }}</h4>
+                        <p><a href="{% url 'store:product' product.id %}" class="btn btn-primary" role="button">View</a>
+                            <a href="#" class="btn btn-default" role="button">Add to cart</a></p>
+                    </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
