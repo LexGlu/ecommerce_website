@@ -39,7 +39,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # local apps
     'store',
+    # third party apps
+    'crispy_forms',
+    'crispy_bootstrap4',
+    'phonenumber_field',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -126,3 +132,6 @@ MEDIA_ROOT = BASE_DIR
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+PHONENUMBER_DB_FORMAT = "NATIONAL"
+PHONENUMBER_DEFAULT_REGION = "UA"

@@ -12,6 +12,16 @@
     </li>
     {% endfor %}
 
+    {% if user.is_authenticated %}
+         <p>Hi, {{ user.first_name }}!<br><a href="{% url 'store:logout' %}">Log Out</a></p>
+
+
+    {% else %}
+        <p>You are not logged in<br><a href="{% url 'store:login' %}">Sign In</a> or
+            <a href="{% url 'store:signup' %}">Sign Up</a>
+        </p>
+    {% endif %}
+
 
 
 {% endblock %}
