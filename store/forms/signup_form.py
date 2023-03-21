@@ -10,7 +10,7 @@ from phonenumber_field.formfields import PhoneNumberField
 class CustomerForm(UserCreationForm):
     """Form for the user registration."""
     phone = PhoneNumberField()
-    phone.error_messages['invalid'] = 'Enter a valid phone number (e.g. +380673332211 or 0673332211).'
+    phone.error_messages['invalid'] = 'Enter a valid phone number (e.g. +380673332211).'
     email = forms.EmailField()
     address = forms.CharField(max_length=128, required=False)
 
@@ -36,10 +36,12 @@ class CustomerForm(UserCreationForm):
 
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Alex', 'class': 'example-label'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Turner', 'class': 'example-label'})
-        self.fields['email'].widget.attrs.update({'placeholder': 'alex.turner@example.com', 'class': 'example-label'})
-        self.fields['phone'].widget.attrs.update({'placeholder': '097-333-22-22', 'class': 'example-label'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'example@mail.com', 'class': 'example-label'})
         self.fields['password1'].widget.attrs.update({'placeholder': '********', 'class': 'example-label'})
         self.fields['password2'].widget.attrs.update({'placeholder': '********', 'class': 'example-label'})
+        self.fields['phone'].widget = forms.TextInput(
+            attrs={'placeholder': '+380', 'class': 'example-label', 'value': '+380', 'pattern': '\+380[0-9]{9}',
+                   'title': 'Enter a valid phone number (e.g. +380673332211)'})
 
     def save(self, commit=True):
         user = super().save(commit=False)
