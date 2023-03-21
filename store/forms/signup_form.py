@@ -33,7 +33,7 @@ class CustomerForm(UserCreationForm):
             'password2',
             Submit('submit', 'Sign up', css_class='btn-success')
         )
-
+        self.fields['first_name'].required = True
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Alex', 'class': 'example-label'})
         self.fields['last_name'].widget.attrs.update({'placeholder': 'Turner', 'class': 'example-label'})
         self.fields['email'].widget.attrs.update({'placeholder': 'example@mail.com', 'class': 'example-label'})

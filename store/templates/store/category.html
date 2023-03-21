@@ -24,7 +24,7 @@
                             Add to Cart
                     </button>
                     <a class="btn btn-outline-primary" href="{% url 'store:product' product.id %}">View</a>
-                    <h4 style="display: inline-block; float: right"><strong>{{product.price | currency}}</strong></h4>
+                    <h4 style="float: right; display: inline-block;"><strong>{{product.price | currency}}</strong></h4>
                 </div>
             </div>
     {% endfor %}
