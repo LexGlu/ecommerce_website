@@ -6,17 +6,28 @@
 {% endblock %}
 
 {% block content %}
-<h3>Products in {{ category.name }} category</h3>
-    {% for product in products %}
-        <div class="product">
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.description }}</p>
-            <p>{{ product.price | currency}} </p>
-            <a href="{% url 'store:product' product.id %}">View</a>
-        </div>
+<h3>{{ category.name }}</h3>
+        <div class="row">
+            {% for product in products %}
+            <div class="col-lg-4">
+                <div class="box-element product-image-container">
+                <a href="{% url 'store:product' product.id %}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                     class="thumbnail">
+                </a>
+                </div>
+                <div class="box-element product">
+                    <h6><strong>{{product.name}}</strong></h6>
+                    <hr>
+                    <button data-product="{{product.id}}"
+                            data-action="add" class="btn btn-outline-success add-btn update-cart">
+                            Add to Cart
+                    </button>
+                    <a class="btn btn-outline-primary" href="{% url 'store:product' product.id %}">View</a>
+                    <h4 style="display: inline-block; float: right"><strong>{{product.price | currency}}</strong></h4>
+                </div>
+            </div>
     {% endfor %}
-
-
-
+        </div>
 
 {% endblock %}

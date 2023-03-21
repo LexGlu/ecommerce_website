@@ -1,27 +1,33 @@
 {% extends 'store/base.html' %}
+{% load custom_filter %}
 
 {% block title %}
     PineApple Store
 {% endblock %}
 
 {% block content %}
-
-    {% for category in categories %}
-    <li>
-        <a href="{% url 'store:category' category.slug %}">{{ category.name }}</a>
-    </li>
-    {% endfor %}
-
-    {% if user.is_authenticated %}
-         <p>Hi, {{ user.first_name }}!<br><a href="{% url 'store:logout' %}">Log Out</a></p>
-
-
-    {% else %}
-        <p>You are not logged in<br><a href="{% url 'store:login' %}">Sign In</a> or
-            <a href="{% url 'store:signup' %}">Sign Up</a>
-        </p>
-    {% endif %}
-
+    <div class="row">
+        {% for product in products %}
+            <div class="col-lg-4">
+                <div class="box-element product-image-container">
+                <a href="{% url 'store:product' product.id %}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                     class="thumbnail">
+                </a>
+                </div>
+                <div class="box-element product">
+                    <h6><strong>{{product.name}}</strong></h6>
+                    <hr>
+                    <button data-product="{{product.id}}"
+                            data-action="add" class="btn btn-outline-success add-btn update-cart">
+                            Add to Cart
+                    </button>
+                    <a class="btn btn-outline-primary" href="{% url 'store:product' product.id %}">View</a>
+                    <h4 style="display: inline-block; float: right"><strong>{{product.price | currency}}</strong></h4>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
 
 {% endblock %}
