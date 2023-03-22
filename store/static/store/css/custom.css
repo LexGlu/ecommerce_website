@@ -25,7 +25,6 @@ footer{
 	background-color: #fff;
 	border-radius: 4px;
 	padding: 10px;
-	align-items: center;
 }
 
 .thumbnail{
@@ -91,8 +90,6 @@ footer{
 	display: inline-block;
 	font-weight: 700;
 	padding-right:10px;
-
-
 }
 
 .chg-quantity{
@@ -123,3 +120,17 @@ footer{
 	float: right;
 	display: inline-block;
 }
+
+.row-image{
+	width: 50px;
+	height: auto;
+	display: inline-block;
+}
+
+.btn-block{
+	width: 100%;
+}
+
+/*Cart styling*/
+
+
