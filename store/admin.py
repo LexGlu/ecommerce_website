@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, Product, Order, Category
+from .models import *
 from django.contrib.auth.models import User
 
 
@@ -51,3 +51,4 @@ admin.site.register(Customer, AdminCustomer)
 admin.site.register(Product)
 admin.site.register(Category)
 admin.site.register(Order)
+admin.site.register(OrderItem)

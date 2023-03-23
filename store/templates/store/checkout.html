@@ -59,24 +59,24 @@
             <div class="box-element">
 				<h3>Order Summary</h3>
 				<hr>
-{#				{% for item in items %}#}
+				{% for item in order.orderitem_set.all %}
 				<div class="cart-row">
-					<div style="flex:1"><img class="row-image" src="{% static 'store/images/phone_example.jpg' %}"
-                                             alt="product-mage"> Samsung S23</div>
+					<div style="flex:1"><img class="row-image" src="{{ item.product.image.url }}"
+                                             alt="{{ item.product.name }}"> {{ item.product.name }}</div>
 					<div style="flex:1; justify-content: center;">
                         <p style="padding: 16px 0">
-                            {{ 20000 | currency }}
+                            {{ item.product.price | currency }}
                         </p>
                     </div>
 					<div style="flex:1">
                         <p style="padding: 16px 0">
-                            x2
+                            {{ item.quantity }}
                         </p>
                     </div>
 				</div>
-{#				{% endfor %}#}
-				<h5>Items:   2</h5>
-				<h5>Total:   {{ 40000 | currency }}</h5>
+				{% endfor %}
+				<h5>Items:   {{ order.total_items }}</h5>
+				<h5>Total:   {{ order.total_value | currency }}</h5>
             </div>
         </div>
 

@@ -7,6 +7,7 @@
 {% block content %}
 
 <a class="btn btn-outline-dark" href="{% url 'store:home' %}">&#x2190; Back to shopping</a>
+{% if items %}
 <div class="row">
     <div class="col-lg-12">
         <div class="box-element">
@@ -16,39 +17,40 @@
                 <div style="flex:1"><strong>Quantity</strong></div>
                 <div style="flex:1"><strong>Total</strong></div>
             </div>
+
+            {% for item in items %}
+
             <div class="cart-row">
-                <div style="flex:1"><img class="row-image" src="{% static 'store/images/phone_example.jpg' %}"
-                                         alt="phone"> Samsung S23</div>
-                <div style="flex:1"><p style="padding: 16px 0">{{ 20000 | currency }}</p></div>
+                <div style="flex:1"><img class="row-image" src="{{ item.product.image.url }}"
+                                         alt="{{ item.product.name }}">{{ item.product.name }}</div>
+                <div style="flex:1"><p style="padding: 16px 0">{{ item.product.price | currency }}</p></div>
                 <div style="flex:1">
-                    <p class="quantity">2</p>
+                    <p class="quantity">{{ item.quantity }}</p>
                     <div class="quantity">
-                        <img class="chg-quantity" src="{% static 'store/images/minus.svg' %}" alt="minus">
-                        <img class="chg-quantity" src="{% static 'store/images/plus.svg' %}" alt="plus">
+
+                        <img class="chg-quantity update-cart"
+                             data-product="{{item.product.id}}"
+                             data-action="add"
+                             src="{% static 'store/images/plus.svg' %}" alt="plus">
+
+                        <img class="chg-quantity update-cart"
+                             data-product="{{item.product.id}}"
+                             data-action="remove"
+                             src="{% static 'store/images/minus.svg' %}" alt="minus">
 
                     </div>
                 </div>
-                <div style="flex:1"><p style="padding: 16px 0">{{ 40000 | currency }}</p></div>
-            </div>
-
-            {#example of second item in cart#}
-
-            <div class="cart-row">
-                <div style="flex:1"><img class="row-image" src="{% static 'store/images/phone_example.jpg' %}"
-                                         alt="phone"> Samsung S23</div>
-                <div style="flex:1"><p style="padding: 16px 0">{{ 20000 | currency }}</p></div>
                 <div style="flex:1">
-
-                    <p class="quantity">2</p>
-                    <div class="quantity">
-                        <img class="chg-quantity" src="{% static 'store/images/minus.svg' %}" alt="minus">
-                        <img class="chg-quantity" src="{% static 'store/images/plus.svg' %}" alt="plus">
-
-                    </div>
+                    <p style="padding: 16px 0">{{ item.total_value | currency }}
+                        <a class="btn btn-outline-danger update-cart"
+                           data-product="{{item.product.id}}"
+                           data-action="delete"
+                           style="display: inline-block; float: right">&#10006;</a>
+                    </p>
                 </div>
-                <div style="flex:1"><p style="padding: 16px 0">{{ 40000 | currency }}</p></div>
             </div>
 
+            {% endfor %}
 
         </div>
 
@@ -57,8 +59,8 @@
 
             <table class="table">
                 <tr>
-                    <th><h5>Items: <strong>5</strong></h5></th>
-                    <th><h5>Total: <strong>{{ 45 | currency }}</strong></h5></th>
+                    <th><h5>Items: <strong>{{ order.total_items}}</strong></h5></th>
+                    <th><h5>Total: <strong>{{ order.total_value | currency }}</strong></h5></th>
                 </tr>
             </table>
             <a href="{% url 'store:checkout' %}" class="btn btn-success btn-block">Checkout</a>
@@ -69,5 +71,11 @@
 
     </div>
 </div>
+{% else %}
+            <br>
+            <br>
+            <h3>Your cart is empty</h3>
+            <p style="font-style: italic">But it's never too late to fix this :)</p>
+{% endif %}
 
 {% endblock %}
