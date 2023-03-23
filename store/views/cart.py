@@ -27,7 +27,7 @@ def checkout(request):
             print(e)
             return redirect('store:home')
     else:
-        order = {'total_items': 0, 'total_value': 0}
+        order = {'total_items': 0, 'total_value': 0, 'shipping': False}
         # code to handle guest checkout will be here
         if order['total_items'] == 0:
             return redirect('store:home')

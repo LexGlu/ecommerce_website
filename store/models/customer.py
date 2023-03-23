@@ -6,7 +6,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = PhoneNumberField(region='UA', unique=True)
-    address = models.CharField(max_length=128, blank=True)
+    city = models.CharField(max_length=128, blank=True)
 
     def __str__(self):
         return self.user.email

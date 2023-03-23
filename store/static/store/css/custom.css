@@ -72,9 +72,9 @@ footer{
 }
 
 .form-field{
-	width:250px;
 	display: inline-block;
 	padding: 5px;
+	width: 49%;
 }
 
 .cart-row{
@@ -131,6 +131,22 @@ footer{
 	width: 100%;
 }
 
-/*Cart styling*/
+.digital-wallets{
+	display: flex;
+}
 
+.wallet{
+	width: 50%;
+	text-align: center;
+}
 
+.wallet-btn img{
+	max-width: 35%;
+	height: auto;
+	margin-bottom: -25px;
+	margin-top: -25px;
+}
+
+.card{
+	text-align: center;
+}

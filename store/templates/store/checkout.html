@@ -13,11 +13,41 @@
                 <form id="form">
                     <div id="user-info">
                         <div class="form-field">
-							<input required class="form-control" type="text" name="name" placeholder="Name..">
+                            <input required class="form-control" type="text" name="name" placeholder="First name..."
+                            {% if user.is_authenticated %}
+                                value="{{ user.first_name }}">
+                            {% else %}
+                                >
+                            {% endif %}
                         </div>
+
                         <div class="form-field">
-							<input required class="form-control" type="email" name="email" placeholder="Email..">
+                            <input required class="form-control" type="text" name="name" placeholder="Last name..."
+                            {% if user.is_authenticated %}
+                                value="{{ user.last_name }}">
+                            {% else %}
+                                >
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+							<input required class="form-control" type="email" name="email" placeholder="Email..."
+                            {% if user.is_authenticated %}
+                                   value="{{ user.email }}">
+                            {% else %}
+                                >
+                            {% endif %}
 						</div>
+
+                        <div class="form-field">
+                            <input required class="form-control" type="text" name="phone" placeholder="Phone..."
+                            {% if user.is_authenticated %}
+                                   value="{{ order.customer.phone }}">
+                            {% else %}
+                                >
+                            {% endif %}
+                        </div>
+
                     </div>
 
                     <div id="shipping-info">
@@ -25,32 +55,61 @@
                         <p style="margin-left: 10px">Shipping Information:</p>
 						<hr>
 						<div class="form-field">
-							<input class="form-control" type="text" name="address" placeholder="Address..">
+							<input class="form-control" type="text" name="city" placeholder="City..."
+                            {% if user.is_authenticated %}
+                                      value="{{ order.customer.city }}">
+                            {% else %}
+                                  >
+                            {% endif %}
 						</div>
 						<div class="form-field">
-							<input class="form-control" type="text" name="city" placeholder="City..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="state" placeholder="State..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="zipcode" placeholder="Zip code..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="country" placeholder="Zip code..">
+							<input class="form-control" type="text" name="np_office" placeholder="Nova Poshta office...">
 						</div>
                     </div>
-                    <hr>
 
-                    <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
+
+                    <div id="form-button">
+                        <hr>
+                        <input class="btn btn-success btn-block" type="submit" value="Continue">
+                    </div>
                 </form>
             </div>
 
             <br>
 			<div class="box-element hidden" id="payment-info">
-				<small>Paypal Options</small>
+				<div style="text-align: center">
+                    <p>Choose payment method:</p>
+                </div>
+
+                <small></small>
 				<!--<button id="make-payment">Make payment</button>-->
-				<div id="paypal-button-container"></div>
+                <div class="digital-wallets">
+                    <div class="wallet">
+                        <div class="wallet-btn">
+                            <a href="#"><img src="{% static 'store/images/google-pay.png' %}" alt="google_pay"></a>
+                        </div>
+                    </div>
+
+                    <div class="wallet">
+                        <div class="wallet-btn">
+                            <a href="#"><img src="{% static 'store/images/apple-pay.png' %}" alt="apple_pay"></a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+                <div style="text-align: center;">Or pay via card:</div>
+                <hr>
+
+                <div>
+                    <form action="#">
+                        <input required class="form-control card" type="text" name="card" placeholder="xxxx-xxxx-xxxx-xxx">
+                        <br>
+                        <input id="payment-button" class="btn btn-success btn-block" value="Make payment">
+                    </form>
+
+
+                </div>
 			</div>
 
         </div>
@@ -82,5 +141,21 @@
 
     </div>
 
+    <script type="text/javascript">
+        let shipping = "{{ order.shipping }}"
+
+        if (shipping === "False"){
+            document.getElementById("shipping-info").innerHTML = ""
+        }
+
+        let form = document.getElementById("form")
+
+        form.addEventListener('submit', function(event){
+            event.preventDefault()
+            console.log('Form submitted...')
+            document.getElementById("form-button").classList.add("hidden")
+            document.getElementById("payment-info").classList.remove("hidden")
+        })
+    </script>
 
 {% endblock %}

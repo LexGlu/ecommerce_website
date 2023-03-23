@@ -19,7 +19,7 @@ class AdminCustomer(admin.ModelAdmin):
     - The email and full_name functions are used to display the customer's email and full name respectively in the
     AdminCustomer class.
     """
-    list_display = [full_name, email, 'phone', 'address']
+    list_display = [full_name, email, 'phone', 'city']
 
 
 class MyUserAdmin(admin.ModelAdmin):
