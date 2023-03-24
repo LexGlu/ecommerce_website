@@ -16,11 +16,8 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
     transaction_id = models.CharField(max_length=100, null=True)
 
-    def set_transaction_id(self):
-        self.transaction_id = f'{self.customer.user.email}#{self.id}'
-
     def __str__(self):
-        return self.transaction_id
+        return f'{self.customer.user.email} - {self.status} #{self.id}'
 
     @staticmethod
     def get_orders_by_customer(customer):
@@ -41,6 +38,10 @@ class Order(models.Model):
                 return True
         return False
 
+    @property
+    def get_order_items(self):
+        return self.orderitem_set.all()
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
@@ -54,3 +55,14 @@ class OrderItem(models.Model):
     @property
     def total_value(self):
         return self.product.price * self.quantity
+
+
+class ShippingInfo(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    city = models.CharField(max_length=128)
+    np_office = models.CharField(max_length=128, blank=True, default='')
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.customer.user.email}'

@@ -35,8 +35,25 @@ function updateUserOrder(productId, action){
     })
 
     .then((data) => {
+
         console.log('Data:', data)
-        // page reload will be fixed in the nearest future
-        location.reload()
+
+        // Update cart count and subtotal
+        const cartCountElement = document.getElementById('cart-count')
+        if (cartCountElement) {
+        cartCountElement.textContent = data['cart-count']
+            if(cartCountElement.textContent === '0'){
+                document.getElementById("cart-count-form").classList.add("hidden")
+                console.log("count is now hidden anymore")
+                console.log(cartCountElement.textContent)
+                document.getElementById("cart-with-items").classList.add("hidden")
+                document.getElementById("cart-without-items").classList.remove("hidden")
+
+            }else {
+                document.getElementById("cart-count-form").classList.remove("hidden")
+                console.log("count is now NOT hidden anymore")
+                console.log(cartCountElement.textContent)
+            }
+        }
     })
 }

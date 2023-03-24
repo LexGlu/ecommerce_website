@@ -7,6 +7,7 @@ class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = PhoneNumberField(region='UA', unique=True)
     city = models.CharField(max_length=128, blank=True)
+    np_office = models.CharField(max_length=128, blank=True, default='')
 
     def __str__(self):
         return self.user.email

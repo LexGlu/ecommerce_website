@@ -1,13 +1,16 @@
+import decimal
+
 from django.shortcuts import render, redirect
-from store.models import Order, Product, OrderItem
+from store.models import Order, Product, OrderItem, ShippingInfo
 from django.http import JsonResponse
 import json
+import datetime
 
 
 def cart(request):
     if request.user.is_authenticated:
         customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer)
+        order, created = Order.objects.get_or_create(customer=customer, status='open')
         items = order.orderitem_set.all()
     else:
         items = []
@@ -44,7 +47,7 @@ def update_item(request):
     customer = request.user.customer
     product = Product.objects.get(id=product_id)
 
-    order, created = Order.objects.get_or_create(customer=customer)
+    order, created = Order.objects.get_or_create(customer=customer, status='open')
     order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
 
     if action == 'add':
@@ -59,4 +62,44 @@ def update_item(request):
     if order_item.quantity <= 0:
         order_item.delete()
 
-    return JsonResponse('Item was added', safe=False)
+    # Get updated cart count and subtotal
+    cart_count = order.total_items
+
+    data = {
+        'message': 'Item was added',
+        'cart-count': cart_count,
+    }
+
+    return JsonResponse(data)
+
+
+def process_order(request):
+    print('Data:', request.body)
+    transaction_id = datetime.datetime.now().timestamp()
+    data = json.loads(request.body)
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(customer=customer, status='open')
+        total = decimal.Decimal(data['form']['total'])
+        order.transaction_id = transaction_id
+
+        print(f"Total: {total} type {type(total)} | Order Total: {order.total_value} type {type(order.total_value)}")
+        print(total == order.total_value)
+
+        if total == order.total_value:
+            order.status = 'processing'
+        order.save()
+
+        if order.shipping:
+            ShippingInfo.objects.create(
+                order=order,
+                customer=customer,
+                city=data['form']['city'],
+                np_office=data['form']['np_office'],
+            )
+
+    else:
+        print('User is not logged in...')
+
+    return JsonResponse('Payment completed', safe=False)

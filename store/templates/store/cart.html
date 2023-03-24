@@ -8,24 +8,45 @@
 
 <a class="btn btn-outline-dark" href="{% url 'store:home' %}">&#x2190; Back to shopping</a>
 {% if items %}
-<div class="row">
+
+    <div id=cart-without-items class="hidden">
+            <br>
+            <h3>Your cart is empty</h3>
+            <p style="font-style: italic">But it's never too late to fix this :)</p>
+    </div>
+
+<div class="row" id="cart-with-items">
     <div class="col-lg-12">
         <div class="box-element">
             <div class="cart-row">
-                <div style="flex:1"><strong>Item</strong></div>
-                <div style="flex:1"><strong>Price</strong></div>
-                <div style="flex:1"><strong>Quantity</strong></div>
-                <div style="flex:1"><strong>Total</strong></div>
+                <div style="flex:3; text-align: center"><strong>Item</strong></div>
+                <div style="flex:0.75"><strong>Price</strong></div>
+                <div style="flex:0.5"><strong>Quantity</strong></div>
+                <div style="flex:1.25"><strong>Total</strong></div>
             </div>
 
             {% for item in items %}
 
             <div class="cart-row">
-                <div style="flex:1"><img class="row-image" src="{{ item.product.image.url }}"
-                                         alt="{{ item.product.name }}">{{ item.product.name }}</div>
-                <div style="flex:1"><p style="padding: 16px 0">{{ item.product.price | currency }}</p></div>
-                <div style="flex:1">
-                    <p class="quantity">{{ item.quantity }}</p>
+
+
+                <div style="flex:0.5; text-align: center" >
+                    <a href="{% url 'store:product' item.product.id %}">
+                        <img class="row-image" src="{{ item.product.image.url }}"
+                         alt="{{ item.product.name }}">
+                    </a>
+                </div>
+                <div style="flex:2.5; display: flex; align-items: center;">
+                    <a class= "product-link" href="{% url 'store:product' item.product.id %}">
+                        {{ item.product.name }}
+                    </a>
+                </div>
+                <div style="flex:0.75; display: flex; align-items: center;">
+                    {{ item.product.price | currency }}
+                </div>
+                <div style="flex:0.5; display: flex; align-items: center">
+                    <strong>{{ item.quantity }}</strong>
+
                     <div class="quantity">
 
                         <img class="chg-quantity update-cart"
@@ -40,14 +61,20 @@
 
                     </div>
                 </div>
-                <div style="flex:1">
-                    <p style="padding: 16px 0">{{ item.total_value | currency }}
-                        <a class="btn btn-outline-danger update-cart"
-                           data-product="{{item.product.id}}"
-                           data-action="delete"
-                           style="display: inline-block; float: right">&#10006;</a>
-                    </p>
+
+                <div style="flex:1; display: flex; align-items: center;">
+                    {{ item.total_value | currency }}
                 </div>
+
+                <div style="flex:0.25; display: flex; align-items: center;">
+                    <a class="btn btn-outline-danger update-cart"
+                       data-product="{{item.product.id}}"
+                       data-action="delete"
+                       style="display: inline-block; float: right">
+                        &#10006;
+                    </a>
+                </div>
+
             </div>
 
             {% endfor %}
@@ -55,27 +82,39 @@
         </div>
 
         <br>
-        <div class="box-element">
 
-            <table class="table">
-                <tr>
-                    <th><h5>Items: <strong>{{ order.total_items}}</strong></h5></th>
-                    <th><h5>Total: <strong>{{ order.total_value | currency }}</strong></h5></th>
-                </tr>
-            </table>
-            <a href="{% url 'store:checkout' %}" class="btn btn-success btn-block">Checkout</a>
+        <div class="box-element" style="padding-top: 25px">
 
+            <div style="display: flex; align-items: stretch; text-align: center">
+
+                <div style="flex:1; text-align: center; display: inline-block">
+                    <h5>Items: <strong>{{ order.total_items}}</strong></h5>
+                </div>
+
+                <div style="flex:1; text-align: center; display: inline-block">
+                    <h5>Total: <strong>{{ order.total_value | currency }}</strong></h5>
+                </div>
+
+            </div>
+                <hr>
+                <div>
+                    <a href="{% url 'store:checkout' %}" class="btn btn-success btn-block checkout-btn">
+                        <strong>Checkout</strong>
+                    </a>
+                </div>
 
         </div>
-        <br>
 
     </div>
-</div>
+
+    </div>
+
 {% else %}
-            <br>
+    <div id=cart-without-items">
             <br>
             <h3>Your cart is empty</h3>
             <p style="font-style: italic">But it's never too late to fix this :)</p>
+    </div>
 {% endif %}
 
 {% endblock %}

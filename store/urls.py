@@ -4,7 +4,8 @@ from .views.category import CategoryView
 from .views.product import ProductView
 from .views.auth import sign_up, log_in, log_out
 from .views.search import search_product
-from .views.cart import cart, checkout, update_item
+from .views.cart import cart, checkout, update_item, process_order
+from .views.customer_views import customer_orders
 
 app_name = 'store'
 urlpatterns = [
@@ -18,4 +19,6 @@ urlpatterns = [
     path('cart/', cart, name='cart'),
     path('checkout/', checkout, name='checkout'),
     path('update_item/', update_item, name='update_item'),
+    path('process_order/', process_order, name='process_order'),
+    path('cabinet/orders/', customer_orders, name='customer_orders'),
 ]

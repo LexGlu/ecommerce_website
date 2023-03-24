@@ -13,7 +13,7 @@ class LoginForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Sign in', css_class='btn-success'))
+        self.helper.add_input(Submit('submit', 'Sign in', css_class='btn-success sign-btn'))
 
         self.fields['email'].widget.attrs.update({'placeholder': 'alex.turner@mail.com', 'class': 'example-label'})
         self.fields['password'].widget.attrs.update({'placeholder': '********', 'class': 'example-label'})

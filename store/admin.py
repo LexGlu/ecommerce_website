@@ -1,6 +1,10 @@
 from django.contrib import admin
+from django.utils.html import format_html
+
 from .models import *
 from django.contrib.auth.models import User
+from django import forms
+from django.urls import reverse
 
 
 @admin.display(description='email')
@@ -13,25 +17,39 @@ def full_name(obj):
     return f'{obj.user.first_name} {obj.user.last_name}'
 
 
+@admin.display(description='total value')
+def total_value(obj):
+    return obj.total_value
+
+
 class AdminCustomer(admin.ModelAdmin):
-    """
-    - The @admin.display decorator is used to create custom fields to display in the Django admin panel.
-    - The email and full_name functions are used to display the customer's email and full name respectively in the
-    AdminCustomer class.
-    """
-    list_display = [full_name, email, 'phone', 'city']
+
+    class OrderInline(admin.TabularInline):
+        model = Order
+        extra = 0
+        readonly_fields = ['formatted_total_value', 'order_link']
+        fields = ['status', 'transaction_id', 'formatted_total_value', 'order_link']
+
+        def order_link(self, obj):
+            return format_html('<a href="{}">View Order</a>', reverse('admin:store_order_change', args=[obj.id]))
+
+        def formatted_total_value(self, obj):
+            return f'{obj.total_value:,.2f} UAH'
+
+        formatted_total_value.short_description = 'Total value'
+        order_link.short_description = 'Order'
+
+    list_display = [full_name, email, 'phone', 'city', 'np_office']
+    fields = ['user', 'phone', 'city', 'np_office']
+    inlines = [OrderInline]
+    search_fields = ('phone', 'user__email', 'user__first_name', 'user__last_name')
+    list_filter = ['city']
 
 
 class MyUserAdmin(admin.ModelAdmin):
-    """
-    - The MyUserAdmin class is used to customize the user model in the Django admin panel.
-    - The list_display attribute is used to display the desired fields of the user model in the admin panel.
-    - The search_fields attribute is used to allow searching for users by email, first name, and last name.
-    - The get_search_results method is overridden to also allow searching for users by ID.
-    """
+
     list_display = ['email', 'first_name', 'last_name', 'is_active', 'is_staff',
                     'is_superuser', 'date_joined', ]
-
     search_fields = ('email', 'first_name', 'last_name')
 
     def get_search_results(self, request, queryset, search_term):
@@ -44,11 +62,54 @@ class MyUserAdmin(admin.ModelAdmin):
         return queryset, use_distinct
 
 
+class ShippingInfoForm(forms.ModelForm):
+    class Meta:
+        model = ShippingInfo
+        exclude = ['customer']
+
+
+class AdminOrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        exclude = ['date_ordered', 'total_value']
+
+
+class AdminOrder(admin.ModelAdmin):
+
+    class OrderItemInline(admin.TabularInline):
+        model = OrderItem
+        extra = 0
+
+    class ShippingInfoInline(admin.StackedInline):
+        model = ShippingInfo
+        form = ShippingInfoForm
+        extra = 0
+
+    readonly_fields = ['date_ordered', 'formatted_total_value']
+    form = AdminOrderForm
+    list_display = ['id', 'customer', 'status', 'formatted_total_value', 'transaction_id', 'date_ordered']
+    list_filter = ['status']
+    search_fields = ['customer__user__email', 'id', 'transaction_id']
+    inlines = [OrderItemInline, ShippingInfoInline]
+
+    def formatted_total_value(self, obj):
+        return f'{obj.total_value:,.2f} UAH'
+
+    formatted_total_value.short_description = 'Total value'
+
+
+class AdminProduct(admin.ModelAdmin):
+
+    list_display = ['name', 'category', 'price', 'digital']
+    list_filter = ['category']
+    search_fields = ['name', 'description']
+
+
 admin.site.unregister(User)
 admin.site.register(User, MyUserAdmin)
 
 admin.site.register(Customer, AdminCustomer)
-admin.site.register(Product)
+admin.site.register(Product, AdminProduct)
 admin.site.register(Category)
-admin.site.register(Order)
-admin.site.register(OrderItem)
+admin.site.register(Order, AdminOrder)
+admin.site.register(ShippingInfo)

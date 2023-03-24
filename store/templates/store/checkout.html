@@ -13,7 +13,7 @@
                 <form id="form">
                     <div id="user-info">
                         <div class="form-field">
-                            <input required class="form-control" type="text" name="name" placeholder="First name..."
+                            <input required class="form-control" type="text" name="first_name" placeholder="First name..."
                             {% if user.is_authenticated %}
                                 value="{{ user.first_name }}">
                             {% else %}
@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="form-field">
-                            <input required class="form-control" type="text" name="name" placeholder="Last name..."
+                            <input required class="form-control" type="text" name="last_name" placeholder="Last name..."
                             {% if user.is_authenticated %}
                                 value="{{ user.last_name }}">
                             {% else %}
@@ -57,26 +57,31 @@
 						<div class="form-field">
 							<input class="form-control" type="text" name="city" placeholder="City..."
                             {% if user.is_authenticated %}
-                                      value="{{ order.customer.city }}">
+                                   value="{{ order.customer.city }}">
                             {% else %}
                                   >
                             {% endif %}
 						</div>
 						<div class="form-field">
-							<input class="form-control" type="text" name="np_office" placeholder="Nova Poshta office...">
+							<input class="form-control" type="text" name="np_office" placeholder="Nova Poshta office..."
+                            {% if user.is_authenticated %}
+                                   value="{{ order.customer.np_office }}">
+                            {% else %}
+                                   >
+                            {% endif %}
 						</div>
                     </div>
 
 
                     <div id="form-button">
                         <hr>
-                        <input class="btn btn-success btn-block" type="submit" value="Continue">
+                        <input class="btn btn-success btn-block checkout-btn" type="submit" value="Continue">
                     </div>
                 </form>
             </div>
 
             <br>
-			<div class="box-element hidden" id="payment-info">
+			<div class="box-element hidden" id="payment-options">
 				<div style="text-align: center">
                     <p>Choose payment method:</p>
                 </div>
@@ -86,30 +91,50 @@
                 <div class="digital-wallets">
                     <div class="wallet">
                         <div class="wallet-btn">
-                            <a href="#"><img src="{% static 'store/images/google-pay.png' %}" alt="google_pay"></a>
+                            <label>
+                                <input type="radio" name="payment-option" value="Google Pay">
+                                <img src="{% static 'store/images/google-pay.png' %}" alt="Google Pay">
+                            </label>
                         </div>
                     </div>
 
                     <div class="wallet">
                         <div class="wallet-btn">
-                            <a href="#"><img src="{% static 'store/images/apple-pay.png' %}" alt="apple_pay"></a>
+                            <label>
+                                <input type="radio" name="payment-option" value="Apple Pay">
+                                <img src="{% static 'store/images/apple-pay.png' %}" alt="Apple Pay">
+                            </label>
                         </div>
                     </div>
+
+                    <div class="wallet">
+                        <div class="wallet-btn">
+                            <label>
+                                <input type="radio" name="payment-option" value="Credit card">
+                                <img class="credit-card" src="{% static 'store/images/credit-card.png' %}" alt="Credit card">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="wallet">
+                        <div class="wallet-btn">
+                            <label>
+                                <input type="radio" name="payment-option" value="Cash">
+                                <img class="cash" src="{% static 'store/images/hryvnia.png' %}" alt="Cash">
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
 
-                <hr>
-                <div style="text-align: center;">Or pay via card:</div>
                 <hr>
 
                 <div>
-                    <form action="#">
-                        <input required class="form-control card" type="text" name="card" placeholder="xxxx-xxxx-xxxx-xxx">
-                        <br>
-                        <input id="payment-button" class="btn btn-success btn-block" value="Make payment">
-                    </form>
-
-
+                    <button class="btn btn-success btn-block checkout-btn" type="button" id="place-order-btn">
+                        <strong>Place order</strong>
+                    </button>
                 </div>
+
 			</div>
 
         </div>
@@ -119,18 +144,30 @@
 				<h3>Order Summary</h3>
 				<hr>
 				{% for item in order.orderitem_set.all %}
+
 				<div class="cart-row">
-					<div style="flex:1"><img class="row-image" src="{{ item.product.image.url }}"
-                                             alt="{{ item.product.name }}"> {{ item.product.name }}</div>
-					<div style="flex:1; justify-content: center;">
-                        <p style="padding: 16px 0">
-                            {{ item.product.price | currency }}
-                        </p>
+
+					<div style="flex:0.5; text-align: center; padding-bottom: 3px; padding-top: 3px">
+                        <a href="{% url 'store:product' item.product.id %}" style="text-decoration: none">
+                            <img class="row-image" src="{{ item.product.image.url }}"
+                                 alt="{{ item.product.name }}">
+                        </a>
                     </div>
-					<div style="flex:1">
-                        <p style="padding: 16px 0">
+
+                    <div style="flex:1.5; align-items: center; display: flex; padding-right: 25px; padding-left: 20px ">
+
+                        <a href="{% url 'store:product' item.product.id %}" class= "product-link">
+                            {{ item.product.name }}
+                        </a>
+
+                    </div>
+
+					<div style="flex:0.6; align-items: center; display: flex">
+                            {{ item.product.price | currency }}
+                    </div>
+
+					<div style="flex:0.15; align-items: center; display: flex">
                             {{ item.quantity }}
-                        </p>
                     </div>
 				</div>
 				{% endfor %}
@@ -143,6 +180,7 @@
 
     <script type="text/javascript">
         let shipping = "{{ order.shipping }}"
+        let total = "{{ order.total_value }}"
 
         if (shipping === "False"){
             document.getElementById("shipping-info").innerHTML = ""
@@ -151,10 +189,47 @@
         let form = document.getElementById("form")
 
         form.addEventListener('submit', function(event){
-            event.preventDefault()
-            console.log('Form submitted...')
-            document.getElementById("form-button").classList.add("hidden")
-            document.getElementById("payment-info").classList.remove("hidden")
+           event.preventDefault()
+           console.log('Form submitted...')
+           document.getElementById("form-button").classList.add("hidden")
+           document.getElementById("payment-options").classList.remove("hidden")
+        })
+
+        let placeOrderBtn = document.getElementById("place-order-btn")
+
+        placeOrderBtn.addEventListener("click", function(event){
+            const paymentOption = document.querySelector("input[name='payment-option']:checked");
+            if (paymentOption) {
+                console.log('Payment button clicked and payment method is chosen...')
+                let userFormData = {
+                    "first_name": form.first_name.value,
+                    "last_name": form.last_name.value,
+                    "email": form.email.value,
+                    "phone": form.phone.value,
+                    "city": form.city.value,
+                    "np_office": form.np_office.value,
+                    "payment_option": paymentOption.value,
+                    "total": total,
+                }
+                let url = "{% url 'store:process_order' %}"
+                fetch(url,{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({'form': userFormData})
+                })
+
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('Success:', data);
+                    alert('Order placed successfully')
+                    window.location.href = "{% url 'store:home' %}"
+                })
+            } else {
+                alert("Please select payment option")
+            }
         })
     </script>
 

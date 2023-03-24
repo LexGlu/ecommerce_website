@@ -31,7 +31,7 @@ class CustomerForm(UserCreationForm):
             'phone',
             'password1',
             'password2',
-            Submit('submit', 'Sign up', css_class='btn-success')
+            Submit('submit', 'Sign up', css_class='btn-success sign-btn')
         )
         self.fields['first_name'].required = True
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Alex', 'class': 'example-label'})

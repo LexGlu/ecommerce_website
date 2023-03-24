@@ -9,7 +9,7 @@ def categories(request):
 def items_in_cart(request):
     if request.user.is_authenticated:
         customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer)
+        order, created = Order.objects.get_or_create(customer=customer, status='open')
         items = order.total_items
     else:
         # temporary value for guest user

@@ -2,16 +2,38 @@
 {% load custom_filter %}
 
 {% block title %}
-    {{ products.category.name }}
+    {{ product.name }}
 {% endblock %}
 
 {% block content %}
-<h4>{{ product.name }}</h4>
-    <img class="img-fluid" src="{{product.image.url}}" alt="product image">
-<p>{{ product.description }}</p>
-<p>{{ product.price | currency}} UAH</p>
-<p>{{ product.category.name }}</p>
-<p>Goods left in stock: {{ product.stock }} item(s) </p>
-
+<div class="product-detail">
+        <div class="product-image">
+            <img class="img-fluid" src="{{ product.image.url }}" alt="product image">
+        </div>
+        <div class="product-info">
+            <div class="product-name">
+                <h4>{{ product.name }}</h4>
+            </div>
+            <div class="product-description">
+                <p>{{ product.description }}</p>
+            </div>
+            <div class="product-price">
+                <p>{{ product.price | currency}} UAH</p>
+            </div>
+            <div class="product-category">
+                <p>Category: {{ product.category.name }}</p>
+            </div>
+            <div class="product-stock">
+                <p>Stock: {{ product.stock }} item(s)</p>
+            </div>
+            <div class="product-action">
+                <button data-product="{{product.id}}"
+                            data-action="add"
+                            class="btn btn-outline-success add-btn update-cart">
+                            Add to Cart
+                </button>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

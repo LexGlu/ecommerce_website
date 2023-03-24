@@ -17,6 +17,7 @@
 
     <!-- JS -->
     <script type="text/javascript">
+
         let user = "{{ request.user}}"
 
         function getToken(name) {
@@ -41,7 +42,7 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light" style="background: #F0F0F0">
       <div class="container-fluid" id="navbar">
         <a class="navbar-brand" href="{% url 'store:home' %}">
             <img src="{% static 'store/images/logo.png' %}"
@@ -76,7 +77,7 @@
             <form class="d-flex" action="{% url 'store:search' %}">
                 <input class="form-control me-2" type="search" placeholder="I'm searching for..." aria-label="Search"
                 name="query" required>
-                <button class="btn btn-outline-primary" type="submit">
+                <button class="btn btn-outline-primary product-view" type="submit">
                     <i class="fa fa-search"></i>
                 </button>
             </form>
@@ -85,18 +86,31 @@
             <div class="form-inline my-2 my-lg-0">
 
                 {% if user.is_authenticated %}
-                    <a href="{% url "store:logout" %}" class="btn btn-danger">Logout</a>
+                    <a href="{% url "store:customer_orders" %}" style="display: inline-block">
+                    <img id="orders-icon" src="{% static 'store/images/list.png' %}" alt="customer orders">
+                    </a>
+
+                    <a href="{% url "store:logout" %}" class="btn btn-danger log-btn">Logout</a>
                 {% else %}
-                    <a href="{% url "store:login" %}" class="btn btn-primary">Login</a>
+                    <a href="{% url "store:login" %}" class="btn btn-primary log-btn">Login</a>
                 {% endif %}
 
-	     	<a href="{% url 'store:cart' %}">
-	    		<img  id="cart-icon" src="{% static 'store/images/shopping-cart.png' %}" alt="cart">
-            </a>
 
-            {% if items_in_cart %}
-	    	<p id="cart-total">{{ items_in_cart }}</p>
-            {% endif %}
+            <div class="cart-icon-container">
+                <a href="{% url 'store:cart' %}" style="display: inline-block">
+	    		    <img  class="cart-icon" src="{% static 'store/images/shopping-cart.png' %}" alt="cart">
+                </a>
+
+                {% if items_in_cart %}
+                    <div class="cart-icon-total" id="cart-count-form">
+                            <p class="" id="cart-count">{{ items_in_cart }}</p>
+                    </div>
+                    {% else %}
+                    <div class="cart-icon-total hidden" id="cart-count-form">
+                            <p class="" id="cart-count">{{ items_in_cart }}</p>
+                    </div>
+                {% endif %}
+            </div>
 
             </div>
         </div>
