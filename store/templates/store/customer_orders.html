@@ -33,11 +33,11 @@
                         </div>
 
                         <div>
-                                <div class="product-list">
+                                <div class="product-list;" style="text-align: left; display: inline-block;">
                                    {% for item in order.get_order_items %}
                                             <a href="{% url 'store:product' item.product.id %}"
                                                style="text-decoration: none">
-                                                <img class="product-image" src="{{ item.product.image.url }}"
+                                                <img class="order-product-image" src="{{ item.product.image.url }}"
                                                      alt="{{ item.product.name }}">
                                             </a>
                                    {% endfor %}

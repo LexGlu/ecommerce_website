@@ -42,19 +42,20 @@ footer{
 }
 
 .cart-icon{
-	width: 25px;
+	height: 30px;
+	/*width: 25px;*/
 	margin-left: 15px;
 }
 
 #orders-icon{
 	width: 40px;
 	margin-left: 0;
-	margin-right: 15px;
+	/*margin-right: 15px;*/
 }
 
 .cart-icon-container{
 	display: inline-block;
-	margin-right: 25px;
+	margin-right: 10px;
 }
 
 .cart-icon-total {
@@ -79,11 +80,20 @@ footer{
 .product-image-container{
 	display: block;
 	height: 220px;
-	padding-bottom: 50px;
+}
+
+.product-image-container img{
+	border-radius: 10px;
+	max-height: 100%;
+	transition: transform 0.3s ease;
+}
+
+.product-image-container img:hover{
+	transform: scale(1.05);
 }
 
 .btn{
-	border-radius: 0;
+	border-radius: 15px;
 }
 
 a.product-link{
@@ -148,10 +158,9 @@ a.product-link:hover{
 }
 
 #searchbar {
-	width: 65%;
-	height: auto;
+	/*height: auto;*/
 	margin-left: auto;
-   	margin-right: auto;
+   	margin-right: 30px;
 }
 
 .product-price{
@@ -241,6 +250,10 @@ a.product-link:hover{
 	border-radius: 20px;
 }
 
+.btn-primary.log-btn{
+	border-radius: 40px;
+}
+
 .checkout-btn{
 	border-radius: 20px;
 }
@@ -250,6 +263,11 @@ a.product-link:hover{
 	margin-top: 10px;
 }
 
+.order-product-image{
+	height: 75px;
+	margin-right: 5px;
+}
+
 /*product template styling*/
 
 .product-detail {
@@ -257,6 +275,7 @@ a.product-link:hover{
 	flex-direction: row;
 	margin: 2rem 0;
 }
+
 .product-image {
 	margin-left: 50px;
 	max-width: 50%;
@@ -264,11 +283,13 @@ a.product-link:hover{
 }
 
 .product-image img {
+	border-radius: 15px;
 	transition: transform 0.3s ease;
+	cursor: pointer;
 }
 
 .product-image img:hover {
-	transform: scale(1.1);
+	transform: scale(1.01);
 }
 
 .product-info {
@@ -282,15 +303,6 @@ a.product-link:hover{
 .product-price p {
 	font-weight: bold;
 	font-size: 1.5rem;
-}
-.btn-primary {
-	margin-top: 1rem;
-	padding: 0.5rem 1rem;
-	border-radius: 0.5rem;
-	background-color: #007bff;
-	color: #fff;
-	border: none;
-	cursor: pointer;
 }
 
 .update-cart{
@@ -322,22 +334,10 @@ a.product-link:hover{
 
 /* Modal Content (image) */
 .modal-content {
-  margin: auto;
-  display: block;
-  width: 50%;
-  max-width: 500px;
-}
-
-/* Caption of Modal Image */
-#caption {
-  margin: auto;
-  display: block;
-  width: 50%;
-  max-width: 500px;
-  text-align: center;
-  color: #ccc;
-  padding: 10px 0;
-  height: 150px;
+	margin: auto;
+	display: block;
+	height: 90%;
+	width: auto;
 }
 
 /* Add Animation */

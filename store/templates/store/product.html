@@ -8,7 +8,7 @@
 {% block content %}
 <div class="product-detail">
         <div class="product-image">
-            <img class="img-fluid" id="{{ product.image.url }}" src="{{ product.image.url }}" alt="product image">
+            <img class="img-fluid" id="{{ product.image.url }}" src="{{ product.image.url }}" alt={{ product.name }}>
         </div>
         <div class="product-info">
             <div class="product-name">
@@ -59,7 +59,6 @@ let captionText = document.getElementById("caption");
 img.onclick = function(){
   modal.style.display = "block";
   modalImg.src = this.src;
-  captionText.innerHTML = this.alt;
 }
 
 // Get the <span> element that closes the modal
