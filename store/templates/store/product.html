@@ -8,7 +8,7 @@
 {% block content %}
 <div class="product-detail">
         <div class="product-image">
-            <img class="img-fluid" src="{{ product.image.url }}" alt="product image">
+            <img class="img-fluid" id="{{ product.image.url }}" src="{{ product.image.url }}" alt="product image">
         </div>
         <div class="product-info">
             <div class="product-name">
@@ -18,10 +18,14 @@
                 <p>{{ product.description }}</p>
             </div>
             <div class="product-price">
-                <p>{{ product.price | currency}} UAH</p>
+                <p>{{ product.price | currency}}</p>
             </div>
             <div class="product-category">
-                <p>Category: {{ product.category.name }}</p>
+                <p>Category:
+                    <a class="product-link" href="{% url 'store:category' product.category.slug %}">
+                    {{ product.category.name }}
+                    </a>
+                </p>
             </div>
             <div class="product-stock">
                 <p>Stock: {{ product.stock }} item(s)</p>
@@ -35,5 +39,37 @@
             </div>
         </div>
     </div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="img01">
+  <div id="caption"></div>
+</div>
+
+
+<script>
+// Get the modal
+let modal = document.getElementById('myModal');
+
+// Get the image and insert it inside the modal - use its "alt" text as a caption
+let img = document.getElementById('{{ product.image.url }}');
+let modalImg = document.getElementById("img01");
+let captionText = document.getElementById("caption");
+img.onclick = function(){
+  modal.style.display = "block";
+  modalImg.src = this.src;
+  captionText.innerHTML = this.alt;
+}
+
+// Get the <span> element that closes the modal
+let span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+</script>
+
 
 {% endblock %}
