@@ -41,6 +41,7 @@
 
                         <div class="form-field">
                             <input required class="form-control" type="text" name="phone" placeholder="Phone..."
+                                   pattern="\+380[0-9]{9}" title="Enter a valid phone number (e.g. +380673332211)"
                             {% if user.is_authenticated %}
                                    value="{{ order.customer.phone }}">
                             {% else %}

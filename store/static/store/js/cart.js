@@ -39,9 +39,29 @@ function updateUserOrder(productId, action){
         console.log('Data:', data)
 
         // Update cart count and subtotal
-        const cartCountElement = document.getElementById('cart-count')
+        let cartCountElement = document.getElementById('cart-count')
         if (cartCountElement) {
-        cartCountElement.textContent = data['cart-count']
+
+        let cartItemValue = document.getElementById('cart-item-value-'+data['product-id'])
+        if (cartItemValue) {
+            console.log('cartItemValue:', cartItemValue)
+            let preFormattedItemValue = data['item-total']
+            let formattedItemValue = numeral(preFormattedItemValue).format('0,0.00').replace(/,/g, ' ');
+            cartItemValue.innerHTML = '\u20B4 ' + formattedItemValue
+        }
+
+        let cartItemCount = document.getElementById('cart-item-count-'+data['product-id'])
+        if (cartItemCount) {
+            cartItemCount.innerHTML = '<strong>' + data['item-count'] + '</strong>'
+        }
+
+
+
+        cartCountElement.textContent = data['cart-count'];
+        let cartSubCountElement = document.getElementById('cart-sub-count')
+            if (cartSubCountElement) {
+                cartSubCountElement.innerHTML = '<h5><strong>' + data['cart-count'] + '</strong></h5>'
+            }
             if(cartCountElement.textContent === '0'){
                 document.getElementById("cart-count-form").classList.add("hidden")
                 console.log("count is now hidden anymore")
@@ -55,5 +75,16 @@ function updateUserOrder(productId, action){
                 console.log(cartCountElement.textContent)
             }
         }
+        let cartSubtotalElement = document.getElementById('cart-subtotal')
+        if (cartSubtotalElement) {
+            let subtotalValue = data['cart-subtotal']
+            let formattedValue = numeral(subtotalValue).format('0,0.00').replace(/,/g, ' ');
+            cartSubtotalElement.innerHTML = '<h5><strong>' + '\u20B4 ' + formattedValue + '</strong></h5>';
+        }
+
+        if (data['item-count'] === 0){
+            document.getElementById('cart-row-' + data['product-id']).classList.add('hidden')
+        }
+
     })
 }

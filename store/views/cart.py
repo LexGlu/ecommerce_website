@@ -59,16 +59,24 @@ def update_item(request):
 
     order_item.save()
 
-    if order_item.quantity <= 0:
-        order_item.delete()
-
     # Get updated cart count and subtotal
     cart_count = order.total_items
+    cart_subtotal = order.total_value
+    item_count = order_item.quantity
+    item_total = order_item.total_value
+    product_id = order_item.product.id
 
     data = {
         'message': 'Item was added',
         'cart-count': cart_count,
+        'cart-subtotal': cart_subtotal,
+        'item-count': item_count,
+        'item-total': item_total,
+        'product-id': product_id,
     }
+
+    if order_item.quantity <= 0:
+        order_item.delete()
 
     return JsonResponse(data)
 

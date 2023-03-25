@@ -10,6 +10,7 @@
 <div class="" id="customer-orders-container">
 
     <h1>My orders</h1>
+    <p>{{ user.first_name }} {{ user.last_name }} ({{ user.email }})</p>
 {% if orders %}
 		{% for order in orders %}
                 <div class="order">

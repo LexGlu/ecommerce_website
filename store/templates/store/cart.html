@@ -27,7 +27,7 @@
 
             {% for item in items %}
 
-            <div class="cart-row">
+            <div class="cart-row" id="cart-row-{{ item.product.id }}">
 
 
                 <div style="flex:0.5; text-align: center" >
@@ -45,7 +45,11 @@
                     {{ item.product.price | currency }}
                 </div>
                 <div style="flex:0.5; display: flex; align-items: center">
-                    <strong>{{ item.quantity }}</strong>
+
+                    <div id="cart-item-count-{{ item.product.id }}">
+                        <strong>{{ item.quantity }}</strong>
+                    </div>
+
 
                     <div class="quantity">
 
@@ -63,7 +67,10 @@
                 </div>
 
                 <div style="flex:1; display: flex; align-items: center;">
-                    {{ item.total_value | currency }}
+                    <div id="cart-item-value-{{ item.product.id }}">
+                        {{ item.total_value | currency }}
+                    </div>
+
                 </div>
 
                 <div style="flex:0.25; display: flex; align-items: center;">
@@ -88,14 +95,25 @@
             <div style="display: flex; align-items: stretch; text-align: center">
 
                 <div style="flex:1; text-align: center; display: inline-block">
-                    <h5>Items: <strong>{{ order.total_items}}</strong></h5>
+                    <div style="display: inline-block">
+                        <h5>Items:</h5>
+                    </div>
+                    <div style="display: inline-block" id="cart-sub-count">
+                        <h5><strong>{{ order.total_items}}</strong></h5>
+                    </div>
                 </div>
 
                 <div style="flex:1; text-align: center; display: inline-block">
-                    <h5>Total: <strong>{{ order.total_value | currency }}</strong></h5>
-                </div>
 
+                    <div style="display: inline-block">
+                        <h5>Total:</h5>
+                    </div>
+                    <div style="display: inline-block" id="cart-subtotal">
+                        <h5><strong>{{ order.total_value | currency }}</strong></h5>
+                    </div>
+                </div>
             </div>
+
                 <hr>
                 <div>
                     <a href="{% url 'store:checkout' %}" class="btn btn-success btn-block checkout-btn">
