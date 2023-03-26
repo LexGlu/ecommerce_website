@@ -19,10 +19,10 @@
     <div class="col-lg-12">
         <div class="box-element">
             <div class="cart-row-header">
-                <div style="flex:3; text-align: center"><strong>Item</strong></div>
-                <div style="flex:0.75"><strong>Price</strong></div>
-                <div style="flex:0.5"><strong>Quantity</strong></div>
-                <div style="flex:1.25"><strong>Total</strong></div>
+                <div style="flex:3; text-align: center; margin-top: -3px"><strong>Item</strong></div>
+                <div style="flex:0.75; margin-top: -3px"><strong>Price</strong></div>
+                <div style="flex:0.5; margin-top: -3px"><strong>Quantity</strong></div>
+                <div style="flex:1.25; margin-top: -3px"><strong>Total</strong></div>
             </div>
 
             {% for item in items %}
@@ -36,17 +36,17 @@
                          alt="{{ item.product.name }}">
                     </a>
                 </div>
-                <div style="flex:2.5; display: flex; align-items: center;">
+                <div style="flex:2.5; display: flex; align-items: center; margin-top: -5px">
                     <a class= "product-link" href="{% url 'store:product' item.product.id %}">
                         {{ item.product.name }}
                     </a>
                 </div>
-                <div style="flex:0.75; display: flex; align-items: center;">
+                <div style="flex:0.75; display: flex; align-items: center; margin-top: -5px">
                     {{ item.product.price | currency }}
                 </div>
                 <div style="flex:0.5; display: flex; align-items: center">
 
-                    <div id="cart-item-count-{{ item.product.id }}">
+                    <div id="cart-item-count-{{ item.product.id }}" style="margin-top: -5px">
                         <strong>{{ item.quantity }}</strong>
                     </div>
 
@@ -67,13 +67,13 @@
                 </div>
 
                 <div style="flex:1; display: flex; align-items: center;">
-                    <div id="cart-item-value-{{ item.product.id }}">
+                    <div id="cart-item-value-{{ item.product.id }}" style="margin-top: -5px">
                         {{ item.total_value | currency }}
                     </div>
 
                 </div>
 
-                <div style="flex:0.25; display: flex; align-items: center;">
+                <div style="flex:0.25; display: flex; align-items: center; margin-top: -5px">
                     <a class="btn btn-outline-danger update-cart"
                        data-product="{{item.product.id}}"
                        data-action="delete"

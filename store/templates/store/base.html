@@ -38,6 +38,34 @@
 		}
 		let csrftoken = getToken('csrftoken')
 
+        function getCookie(name) {
+		    // Split cookie string and get all individual name=value pairs in an array
+		    let cookieArr = document.cookie.split(";");
+
+		    // Loop through the array elements
+		    for(let i = 0; i < cookieArr.length; i++) {
+		        let cookiePair = cookieArr[i].split("=");
+
+		        /* Removing whitespace at the beginning of the cookie name
+		        and compare it with the given string */
+		        if(name === cookiePair[0].trim()) {
+		            // Decode the cookie value and return
+		            return decodeURIComponent(cookiePair[1]);
+		        }
+		    }
+
+		    // Return null if not found
+		    return null;
+		}
+		let cart = JSON.parse(getCookie('cart'))
+
+		if (cart === undefined || cart === null){
+			cart = {}
+			console.log('Cart Created!', cart)
+			document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+		}
+		console.log('Cart:', cart)
+
     </script>
 
     <title>{% block title %}{% endblock %}</title>
@@ -65,7 +93,7 @@
                 Catalogue
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  {% for category in categories %}
+                  {% for category in catalogue %}
                        <li><a class="dropdown-item" href="{% url 'store:category' category.slug  %}">{{ category.name }}</a></li>
                   {% endfor %}
                 <li><hr class="dropdown-divider"></li>
@@ -88,12 +116,9 @@
 
             <div class="form-inline my-2 my-lg-0" style="display: flex; gap: 20px">
 
-
-
-
                             {% if user.is_authenticated %}
                                 <div style="align-self: flex-start;">
-                                <a href="{% url "store:customer_orders" %}" style="display: inline-block">
+                                <a href="{% url "store:customer_orders" %}" style="display: inline-block; margin-right: 10px">
                                 <img id="orders-icon" src="{% static 'store/images/list.png' %}" alt="customer orders">
                                 </a>
                                 <a href="{% url "store:logout" %}" class="btn btn-danger log-btn">Logout</a>
@@ -103,7 +128,6 @@
                                 <a href="{% url "store:login" %}" class="btn btn-primary log-btn">Login</a>
                                 </div>
                             {% endif %}
-
 
                 <div class="cart-icon-container" style="align-self: center">
                     <a href="{% url 'store:cart' %}" style="display: inline-block">

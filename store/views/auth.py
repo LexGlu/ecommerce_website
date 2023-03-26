@@ -3,10 +3,13 @@ from django.contrib.auth.hashers import check_password
 from store.models.customer import Customer
 from store.forms.signup_form import CustomerForm
 from store.forms.login_form import LoginForm
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 
 
 def sign_up(request):
+    if request.user.is_authenticated:
+        return redirect('store:home')
+
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
@@ -21,6 +24,9 @@ def sign_up(request):
 
 
 def log_in(request):
+    if request.user.is_authenticated:
+        return redirect('store:home')
+
     if request.method == 'POST':
         form = LoginForm(request.POST)
         email = request.POST.get('email')
@@ -41,6 +47,6 @@ def log_in(request):
 
 
 def log_out(request):
-    request.session.clear()
+    logout(request)
     return redirect('store:home')
 

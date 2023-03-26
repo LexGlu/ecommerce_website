@@ -53,6 +53,10 @@ footer{
 	/*margin-right: 15px;*/
 }
 
+#orders-icon:hover{
+	opacity: .6;
+}
+
 .cart-icon-container{
 	display: inline-block;
 	margin-right: 10px;
@@ -317,6 +321,15 @@ a.product-link:hover{
 
 .update-cart{
 	border-radius: 20px;
+	background: white;
+}
+
+.update-cart.add-to-cart{
+	margin-top: -7px;
+}
+
+.update-cart.add-to-cart:hover{
+	background: whitesmoke;
 }
 
 .view-product{

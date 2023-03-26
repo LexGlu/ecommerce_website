@@ -4,11 +4,13 @@ for (let i = 0; i < updateButtons.length; i++) {
     updateButtons[i].addEventListener('click', function(){
         let productId = this.dataset.product
         let action = this.dataset.action
-        console.log('productId:', productId, 'Action:', action)
 
+        console.log('productId:', productId, 'Action:', action)
         console.log('USER:', user)
+
         if(user === 'AnonymousUser'){
-            console.log('User is not authenticated')
+            addCookieItem(productId, action)
+            updateUserOrder(productId, action)
         }else{
             updateUserOrder(productId, action)
         }
@@ -64,14 +66,12 @@ function updateUserOrder(productId, action){
             }
             if(cartCountElement.textContent === '0'){
                 document.getElementById("cart-count-form").classList.add("hidden")
-                console.log("count is now hidden anymore")
                 console.log(cartCountElement.textContent)
                 document.getElementById("cart-with-items").classList.add("hidden")
                 document.getElementById("cart-without-items").classList.remove("hidden")
 
             }else {
                 document.getElementById("cart-count-form").classList.remove("hidden")
-                console.log("count is now NOT hidden anymore")
                 console.log(cartCountElement.textContent)
             }
         }
@@ -87,4 +87,29 @@ function updateUserOrder(productId, action){
         }
 
     })
+}
+
+function addCookieItem(productId, action) {
+    if (action === 'add') {
+        if (cart[productId] === undefined || cart[productId] === null) {
+            cart[productId] = {'quantity': 1}
+        }else{
+            cart[productId]['quantity'] += 1
+        }
+    }
+    if (action === 'remove') {
+        cart[productId]['quantity'] -= 1
+
+        if (cart[productId]['quantity'] <= 0) {
+            console.log('Remove Item')
+            delete cart[productId]
+        }
+    }
+    if (action === 'delete') {
+        delete cart[productId]
+    }
+
+    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    console.log('Cart:', cart)
+
 }

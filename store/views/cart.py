@@ -11,10 +11,29 @@ def cart(request):
     if request.user.is_authenticated:
         customer = request.user.customer
         order, created = Order.objects.get_or_create(customer=customer, status='open')
-        items = order.orderitem_set.all()
+        items = order.orderitem_set.all().order_by('product__id')
     else:
+        try:
+            guest_cart = json.loads(request.COOKIES['cart'])
+        except KeyError:
+            guest_cart = {}
         items = []
         order = {'total_items': 0, 'total_value': 0}
+
+        if guest_cart:
+            for product_id in guest_cart:
+                product = Product.objects.get(id=product_id)
+                product_total = (product.price * guest_cart[product_id]['quantity'])
+                product_quantity = guest_cart[product_id]['quantity']
+                order['total_value'] += product_total
+                order['total_items'] += product_quantity
+                item = {
+                    'product': product,
+                    'quantity': product_quantity,
+                    'total_value': product_total,
+                }
+                items.append(item)
+
     context = {'items': items, 'order': order}
     return render(request, 'store/cart.html', context)
 
@@ -31,7 +50,11 @@ def checkout(request):
             return redirect('store:home')
     else:
         order = {'total_items': 0, 'total_value': 0, 'shipping': False}
+
         # code to handle guest checkout will be here
+        order_data = json.loads(request.COOKIES['cart'])
+        # continue here
+
         if order['total_items'] == 0:
             return redirect('store:home')
     return render(request, 'store/checkout.html', {'order': order})
@@ -40,31 +63,72 @@ def checkout(request):
 def update_item(request):
     data = json.loads(request.body)
     product_id = data['productId']
+    product = Product.objects.get(id=product_id)
     action = data['action']
     print('Action:', action)
     print('Product:', product_id)
 
-    customer = request.user.customer
-    product = Product.objects.get(id=product_id)
+    if request.user.is_authenticated:
 
-    order, created = Order.objects.get_or_create(customer=customer, status='open')
-    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+        customer = request.user.customer
 
-    if action == 'add':
-        order_item.quantity = (order_item.quantity + 1)
-    elif action == 'remove':
-        order_item.quantity = (order_item.quantity - 1)
-    elif action == 'delete':
-        order_item.quantity = 0
+        order, created = Order.objects.get_or_create(customer=customer, status='open')
+        order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
 
-    order_item.save()
+        if action == 'add':
+            order_item.quantity = (order_item.quantity + 1)
+        elif action == 'remove':
+            order_item.quantity = (order_item.quantity - 1)
+        elif action == 'delete':
+            order_item.quantity = 0
 
-    # Get updated cart count and subtotal
-    cart_count = order.total_items
-    cart_subtotal = order.total_value
-    item_count = order_item.quantity
-    item_total = order_item.total_value
-    product_id = order_item.product.id
+        order_item.save()
+
+        # Get updated cart count and subtotal
+        cart_count = order.total_items
+        cart_subtotal = order.total_value
+        item_count = order_item.quantity
+        item_total = order_item.total_value
+        # product_id = order_item.product.id
+
+        if order_item.quantity <= 0:
+            order_item.delete()
+
+    else:
+        try:
+            guest_cart = json.loads(request.COOKIES['cart'])
+        except Exception as e:
+            print(e)
+            return {
+                'message': 'Cart is empty',
+                'cart-count': 0,
+                'cart-subtotal': 0,
+                'item-count': 0,
+                'item-total': 0,
+                'product-id': product_id,
+            }
+
+        # Get updated cart count and subtotal
+        cart_count = 0
+        for i in guest_cart:
+            cart_count += guest_cart[i]['quantity']
+
+        cart_subtotal = 0
+        for i in guest_cart:
+            product_in_cart = Product.objects.get(id=i)
+            cart_subtotal += product_in_cart.price * guest_cart[i]['quantity']
+
+        try:
+            item_count = guest_cart.get(product_id).get('quantity')
+            item_total = item_count * product.price
+            print(f"Item Count: {item_count} ")
+        except Exception as e:
+            print(e)
+            item_count = 0
+            item_total = 0
+
+        # if guest_cart[product_id]['quantity'] <= 0:
+        #     del guest_cart[product_id]
 
     data = {
         'message': 'Item was added',
@@ -74,9 +138,6 @@ def update_item(request):
         'item-total': item_total,
         'product-id': product_id,
     }
-
-    if order_item.quantity <= 0:
-        order_item.delete()
 
     return JsonResponse(data)
 
