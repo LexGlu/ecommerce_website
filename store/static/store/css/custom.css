@@ -116,11 +116,21 @@ a.product-link:hover{
 .cart-row{
 	display: flex;
     align-items: stretch;
+    /*padding-bottom: 10px;*/
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ececec;
+
+}
+
+.cart-row-header{
+	display: flex;
+    align-items: stretch;
     padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #ececec;
 
 }
+
 
 .quantity{
 	display: inline-block;
@@ -169,7 +179,7 @@ a.product-link:hover{
 }
 
 .row-image{
-	height: 75px;
+	height: 50px;
 	width: auto;
 	display: inline-block;
 }
