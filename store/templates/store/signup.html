@@ -1,12 +1,23 @@
 {% extends 'store/base.html' %}
 
 {% load crispy_forms_tags %}
+{#{% load crispy_forms_filters %}#}
 
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
 
-{% crispy form %}
+    {% if error %}
+
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+
+    {% endif %}
+
+
+    {% crispy form %}
+
 
     <p class="alert alert-primary" style="margin-top: 10px">If you already have an account,
         <a href="{% url 'store:login' %}">sign in</a> instead.</p>

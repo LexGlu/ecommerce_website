@@ -13,6 +13,16 @@ def sign_up(request):
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
+            email = form.cleaned_data.get('email')
+            phone = form.cleaned_data.get('phone')
+
+            if Customer.get_customer_by_user_email(email):
+                return render(request, 'store/signup.html',
+                              {'form': form, 'error': 'Customer with this email already exists'})
+            elif Customer.get_customer_by_phone(phone):
+                return render(request, 'store/signup.html',
+                              {'form': form, 'error': 'Customer with this phone already exists'})
+
             customer = form.save()
             login(request, customer.user)
             return redirect('store:home')
@@ -31,7 +41,7 @@ def log_in(request):
         form = LoginForm(request.POST)
         email = request.POST.get('email')
         password = request.POST.get('password')
-        customer = Customer.get_customer_by_email(email)
+        customer = Customer.get_customer_by_user_email(email)
         if not customer:
             error_message = f'Customer with email {email} does not exist'
             return render(request, 'store/login.html', {'form': form, 'error': error_message})

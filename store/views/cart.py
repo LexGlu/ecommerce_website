@@ -1,7 +1,7 @@
 import decimal
 
 from django.shortcuts import render, redirect
-from store.models import Order, Product, OrderItem, ShippingInfo
+from store.models import Order, Product, OrderItem, ShippingInfo, Customer
 from django.http import JsonResponse
 import json
 import datetime
@@ -49,14 +49,36 @@ def checkout(request):
             print(e)
             return redirect('store:home')
     else:
-        order = {'total_items': 0, 'total_value': 0, 'shipping': False}
+        all_items = []
+        order = {
+            'total_items': 0,
+            'total_value': 0,
+            'all_items': all_items,
+            'shipping': False,
+        }
 
-        # code to handle guest checkout will be here
         order_data = json.loads(request.COOKIES['cart'])
-        # continue here
+
+        for product_id in order_data:
+            product = Product.objects.get(id=product_id)
+
+            product_total = (product.price * order_data[product_id]['quantity'])
+            product_quantity = order_data[product_id]['quantity']
+            order['total_value'] += product_total
+            order['total_items'] += product_quantity
+            item = {
+                'product': product,
+                'quantity': product_quantity,
+                'total_value': product_total,
+            }
+            all_items.append(item)
+
+        if any(not item['product'].digital for item in all_items):
+            order['shipping'] = True
 
         if order['total_items'] == 0:
             return redirect('store:home')
+
     return render(request, 'store/checkout.html', {'order': order})
 
 
@@ -89,7 +111,6 @@ def update_item(request):
         cart_subtotal = order.total_value
         item_count = order_item.quantity
         item_total = order_item.total_value
-        # product_id = order_item.product.id
 
         if order_item.quantity <= 0:
             order_item.delete()
@@ -127,9 +148,6 @@ def update_item(request):
             item_count = 0
             item_total = 0
 
-        # if guest_cart[product_id]['quantity'] <= 0:
-        #     del guest_cart[product_id]
-
     data = {
         'message': 'Item was added',
         'cart-count': cart_count,
@@ -158,6 +176,8 @@ def process_order(request):
 
         if total == order.total_value:
             order.status = 'processing'
+        else:
+            order.status = 'canceled'
         order.save()
 
         if order.shipping:
@@ -169,6 +189,50 @@ def process_order(request):
             )
 
     else:
-        print('User is not logged in...')
+        guest_email = data['form']['email']
+        guest_name = f"{data['form']['first_name']} {data['form']['last_name']}"
+        guest_phone = data['form']['phone']
+        shipping = data['form']['shipping']
+        items = json.loads(request.COOKIES['cart'])
+        print('Items:', items)
 
-    return JsonResponse('Payment completed', safe=False)
+        customer, created = Customer.objects.get_or_create(guest_email=guest_email)
+        customer.guest_name = guest_name
+        customer.guest_phone = guest_phone
+        customer.save()
+
+        order = Order.objects.create(
+            customer=customer,
+            status='processing',
+            transaction_id=transaction_id,
+        )
+
+        if shipping:
+            ShippingInfo.objects.create(
+                order=order,
+                customer=customer,
+                city=data['form']['city'],
+                np_office=data['form']['np_office'],
+            )
+
+        # create order items
+        for item in items:
+            product = Product.objects.get(id=item)
+            quantity = items[item]['quantity']
+            item_value = product.price * quantity
+            if item_value:
+                OrderItem.objects.create(
+                    order=order,
+                    product=product,
+                    quantity=quantity,
+                )
+
+        # add later for new customer registration after checkout
+        # customer_data = {
+        #     'email': guest_email,
+        #     'first_name': data['form']['first_name'],
+        #     'last_name': data['form']['last_name'],
+        #     'phone': guest_phone,
+        # }
+
+    return JsonResponse('Order placed successfully', safe=False)

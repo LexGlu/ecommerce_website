@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from store.models.customer import Customer
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column
+from crispy_forms.layout import Layout, Submit, Row, Column, Div, Field
 from phonenumber_field.formfields import PhoneNumberField
 
 
@@ -23,9 +23,14 @@ class CustomerForm(UserCreationForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Row(
-                Column('first_name', css_class='form-group col-md-6 mb-0'),
-                Column('last_name', css_class='form-group col-md-6 mb-0'),
-                css_class='form-row'
+                Column(
+                    Field('first_name'),
+                    css_class='col-md-6 mb-0',
+                ),
+                Column(
+                    Field('last_name'),
+                    css_class='col-md-6 mb-0',
+                ),
             ),
             'email',
             'phone',
@@ -49,9 +54,25 @@ class CustomerForm(UserCreationForm):
         if commit:
             user.save()
 
-        customer = Customer.objects.create(
-            user=user,
-            phone=self.cleaned_data['phone'],
-        )
+        customer = None
+        email = self.cleaned_data['email']
+        phone = self.cleaned_data['phone']
+
+        if Customer.get_customer_by_guest_email(email):
+            customer = Customer.get_customer_by_guest_email(email)
+            customer.user = user
+            customer.save()
+        if Customer.get_customer_by_guest_phone(phone):
+            customer = Customer.get_customer_by_guest_phone(phone)
+            if not customer.user:
+                customer.user = user
+            customer.phone = phone
+            customer.save()
+
+        if not customer:
+            customer = Customer.objects.create(
+                user=user,
+                phone=self.cleaned_data['phone'],
+            )
 
         return customer

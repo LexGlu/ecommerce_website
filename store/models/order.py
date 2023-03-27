@@ -39,7 +39,7 @@ class Order(models.Model):
         return False
 
     @property
-    def get_order_items(self):
+    def all_items(self):
         return self.orderitem_set.all()
 
 

@@ -144,7 +144,7 @@
             <div class="box-element">
 				<h3>Order Summary</h3>
 				<hr>
-				{% for item in order.orderitem_set.all %}
+				{% for item in order.all_items %}
 
 				<div class="cart-row">
 
@@ -211,6 +211,7 @@
                     "np_office": form.np_office.value,
                     "payment_option": paymentOption.value,
                     "total": total,
+                    "shipping": shipping,
                 }
                 let url = "{% url 'store:process_order' %}"
                 fetch(url,{
@@ -226,6 +227,10 @@
                 .then((data) => {
                     console.log('Success:', data);
                     alert('Order placed successfully')
+
+                    cart = {}
+                    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
                     window.location.href = "{% url 'store:home' %}"
                 })
             } else {
