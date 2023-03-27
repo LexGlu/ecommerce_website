@@ -1,6 +1,7 @@
 import decimal
 
-from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect, reverse
 from store.models import Order, Product, OrderItem, ShippingInfo, Customer
 from django.http import JsonResponse
 import json
@@ -45,10 +46,15 @@ def checkout(request):
             order = Order.objects.get(customer=customer, status='open')
             if order.total_items == 0:
                 return redirect('store:home')
+            else:
+                redirect_url = reverse('store:checkout')
         except Exception as e:
             print(e)
             return redirect('store:home')
     else:
+
+        redirect_url = reverse('store:signup')
+
         all_items = []
         order = {
             'total_items': 0,
@@ -79,7 +85,7 @@ def checkout(request):
         if order['total_items'] == 0:
             return redirect('store:home')
 
-    return render(request, 'store/checkout.html', {'order': order})
+    return render(request, 'store/checkout.html', {'order': order, 'redirect_url': redirect_url})
 
 
 def update_item(request):
@@ -190,8 +196,28 @@ def process_order(request):
 
     else:
         guest_email = data['form']['email']
-        guest_name = f"{data['form']['first_name']} {data['form']['last_name']}"
         guest_phone = data['form']['phone']
+
+        # Check if guest email or phone already exists in user database
+
+        user_exists_mail = User.objects.filter(email=guest_email).exists()
+        user_exists_phone = Customer.objects.filter(phone=guest_phone).exists()
+
+        error_user_exists = None
+        if user_exists_mail and user_exists_phone:
+            error_user_exists = f'User with email {guest_email} and {guest_phone} is already registered. ' \
+                                f'Please login to continue.'
+        elif user_exists_mail:
+            error_user_exists = f'User with email {guest_email} is already registered. ' \
+                                f'Please login to continue or check entered email.'
+        elif user_exists_phone:
+            error_user_exists = f'User with phone {guest_phone} is already registered. Please login to continue.'
+
+        if error_user_exists:
+            return JsonResponse({'error_user_exists': error_user_exists})
+
+        guest_name = f"{data['form']['first_name']} {data['form']['last_name']}"
+
         shipping = data['form']['shipping']
         items = json.loads(request.COOKIES['cart'])
         print('Items:', items)
@@ -228,11 +254,13 @@ def process_order(request):
                 )
 
         # add later for new customer registration after checkout
-        # customer_data = {
-        #     'email': guest_email,
-        #     'first_name': data['form']['first_name'],
-        #     'last_name': data['form']['last_name'],
-        #     'phone': guest_phone,
-        # }
+        customer_data = {
+            'email': guest_email,
+            'first_name': data['form']['first_name'],
+            'last_name': data['form']['last_name'],
+            'phone': guest_phone,
+        }
 
-    return JsonResponse('Order placed successfully', safe=False)
+        request.session['customer_data'] = customer_data
+
+    return JsonResponse('Payment submitted..', safe=False)

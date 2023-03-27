@@ -7,6 +7,9 @@ from django.contrib.auth import login, logout
 
 
 def sign_up(request):
+
+    message = None
+
     if request.user.is_authenticated:
         return redirect('store:home')
 
@@ -29,11 +32,29 @@ def sign_up(request):
         else:
             return render(request, 'store/signup.html', {'form': form})
     else:
-        form = CustomerForm()
-        return render(request, 'store/signup.html', {'form': form})
+        customer_data = request.session.get('customer_data')
+
+        if customer_data:
+            form = CustomerForm(
+                initial={
+                    'first_name': customer_data['first_name'],
+                    'last_name': customer_data['last_name'],
+                    'email': customer_data['email'],
+                    'phone': customer_data['phone'],
+                }
+            )
+
+            message = 'Please fill in the form to complete your registration and view your order details'
+
+            del request.session['customer_data']
+
+        else:
+            form = CustomerForm()
+        return render(request, 'store/signup.html', {'form': form, 'message': message})
 
 
 def log_in(request):
+
     if request.user.is_authenticated:
         return redirect('store:home')
 
@@ -52,11 +73,11 @@ def log_in(request):
         login(request, customer.user)
         return redirect('store:home')
     else:
+        error_user_exists = request.session.get('error_user_exists')
         form = LoginForm()
-        return render(request, 'store/login.html', {'form': form})
+        return render(request, 'store/login.html', {'form': form, 'error_user_exists': error_user_exists})
 
 
 def log_out(request):
     logout(request)
     return redirect('store:home')
-

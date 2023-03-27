@@ -1,18 +1,21 @@
 {% extends 'store/base.html' %}
 
 {% load crispy_forms_tags %}
-{#{% load crispy_forms_filters %}#}
 
 {% block title %}Sign up{% endblock %}
 
 {% block content %}
 
     {% if error %}
-
         <div class="alert alert-danger" role="alert">
             {{ error }}
         </div>
+    {% endif %}
 
+    {% if message %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
     {% endif %}
 
 

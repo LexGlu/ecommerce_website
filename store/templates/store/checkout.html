@@ -202,17 +202,22 @@
             const paymentOption = document.querySelector("input[name='payment-option']:checked");
             if (paymentOption) {
                 console.log('Payment button clicked and payment method is chosen...')
+
                 let userFormData = {
                     "first_name": form.first_name.value,
                     "last_name": form.last_name.value,
                     "email": form.email.value,
                     "phone": form.phone.value,
-                    "city": form.city.value,
-                    "np_office": form.np_office.value,
+                    "shipping": shipping,
                     "payment_option": paymentOption.value,
                     "total": total,
-                    "shipping": shipping,
                 }
+
+                if (shipping === "True") {
+                    userFormData["city"] = form.city.value;
+                    userFormData["np_office"] = form.np_office.value;
+                  }
+
                 let url = "{% url 'store:process_order' %}"
                 fetch(url,{
                     method: 'POST',
@@ -223,15 +228,25 @@
                     body: JSON.stringify({'form': userFormData})
                 })
 
+
                 .then((response) => response.json())
+
                 .then((data) => {
-                    console.log('Success:', data);
-                    alert('Order placed successfully')
 
-                    cart = {}
-                    document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+                    if ('error_user_exists' in data) {
+                        alert(data['error_user_exists'])
+                        window.location.href = {% url 'store:login' %}
+                    }else{
+                        console.log('Success:', data);
+                        alert('Order placed successfully')
 
-                    window.location.href = "{% url 'store:home' %}"
+                        cart = {}
+                        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
+                        window.location.href = {{ redirect_url }}
+                    }
+
+
                 })
             } else {
                 alert("Please select payment option")
