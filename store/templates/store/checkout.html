@@ -209,7 +209,7 @@
             document.getElementById("payment-options").classList.remove("hidden")
             editFormBtn.classList.remove("hidden")
             formFields.forEach(function(field){
-                field.setAttribute("readonly", "readonly")
+                field.setAttribute("disabled", "disabled")
             })
 
         })
@@ -221,7 +221,7 @@
             document.getElementById("payment-options").classList.add("hidden")
             editFormBtn.classList.add("hidden")
             formFields.forEach(function(field){
-                field.removeAttribute("readonly")
+                field.removeAttribute("disabled")
             })
         })
 
