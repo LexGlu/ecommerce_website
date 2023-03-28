@@ -2,7 +2,7 @@ from django.urls import path
 from .views.home import HomeView
 from .views.category import CategoryView
 from .views.product import ProductView
-from .views.auth import sign_up, log_in, log_out
+from .views.auth import sign_up, log_in, log_out, update_cart_after_logout
 from .views.search import search_product
 from .views.cart import cart, checkout, update_item, process_order
 from .views.customer_views import customer_orders
@@ -19,6 +19,7 @@ urlpatterns = [
     path('cart/', cart, name='cart'),
     path('checkout/', checkout, name='checkout'),
     path('update_item/', update_item, name='update_item'),
+    path('update_cart/', update_cart_after_logout, name='update_cart_after_logout'),
     path('process_order/', process_order, name='process_order'),
     path('cabinet/orders/', customer_orders, name='customer_orders'),
 ]

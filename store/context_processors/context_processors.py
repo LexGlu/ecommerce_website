@@ -20,3 +20,5 @@ def items_in_cart(request):
             items = 0
 
     return {'items_in_cart': items}
+
+

@@ -78,6 +78,14 @@
                         <hr>
                         <input class="btn btn-success btn-block checkout-btn" type="submit" value="Continue">
                     </div>
+
+                    <div id="edit-form-button" class="hidden">
+                        <hr>
+                        <button class="btn btn-warning btn-block" type="button">
+                            Edit information
+                        </button>
+                    </div>
+
                 </form>
             </div>
 
@@ -189,16 +197,36 @@
 
         let form = document.getElementById("form")
 
+        let formFields = document.querySelectorAll(".form-field input")
+        let editFormBtn = document.getElementById("edit-form-button")
+
         form.addEventListener('submit', function(event){
-           event.preventDefault()
-           console.log('Form submitted...')
-           document.getElementById("form-button").classList.add("hidden")
-           document.getElementById("payment-options").classList.remove("hidden")
+            event.preventDefault()
+            console.log('Form submitted...')
+            document.getElementById("form-button").classList.add("hidden")
+            document.getElementById("payment-options").classList.remove("hidden")
+            editFormBtn.classList.remove("hidden")
+            formFields.forEach(function(field){
+                field.setAttribute("readonly", "readonly")
+            })
+
+        })
+
+        editFormBtn.addEventListener("click", function(event){
+            event.preventDefault()
+            console.log('Edit button clicked...')
+            document.getElementById("form-button").classList.remove("hidden")
+            document.getElementById("payment-options").classList.add("hidden")
+            editFormBtn.classList.add("hidden")
+            formFields.forEach(function(field){
+                field.removeAttribute("readonly")
+            })
         })
 
         let placeOrderBtn = document.getElementById("place-order-btn")
 
         placeOrderBtn.addEventListener("click", function(event){
+            event.preventDefault()
             const paymentOption = document.querySelector("input[name='payment-option']:checked");
             if (paymentOption) {
                 console.log('Payment button clicked and payment method is chosen...')
@@ -233,9 +261,14 @@
 
                 .then((data) => {
 
-                    if ('error_user_exists' in data) {
-                        alert(data['error_user_exists'])
-                        window.location.href = {% url 'store:login' %}
+                    if (typeof data === 'object' && data !== null && 'error_user_exists' in data) {
+                        let choice = window.confirm(data['error_user_exists'])
+                        if (choice){
+                            window.location.href = {% url 'store:login' %}
+                        } else {
+                            location.reload()
+                        }
+
                     }else{
                         console.log('Success:', data);
                         alert('Order placed successfully')

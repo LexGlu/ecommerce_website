@@ -205,13 +205,22 @@ def process_order(request):
 
         error_user_exists = None
         if user_exists_mail and user_exists_phone:
-            error_user_exists = f'User with email {guest_email} and {guest_phone} is already registered. ' \
-                                f'Please login to continue.'
+            error_user_exists = f'User with email {guest_email} and phone {guest_phone} is already registered. ' \
+                                f'Please login to continue or check entered information. Do you want to login?'
+            customer_data = {
+                'email': guest_email,
+            }
+            request.session['customer_data'] = customer_data
         elif user_exists_mail:
             error_user_exists = f'User with email {guest_email} is already registered. ' \
-                                f'Please login to continue or check entered email.'
+                                f'Please login to continue or check entered email. Do you want to login?'
+            customer_data = {
+                'email': guest_email,
+            }
+            request.session['customer_data'] = customer_data
         elif user_exists_phone:
-            error_user_exists = f'User with phone {guest_phone} is already registered. Please login to continue.'
+            error_user_exists = f'User with phone {guest_phone} is already registered. Please login to continue or' \
+                                f'check entered information. Do you want to login?'
 
         if error_user_exists:
             return JsonResponse({'error_user_exists': error_user_exists})
@@ -253,7 +262,7 @@ def process_order(request):
                     quantity=quantity,
                 )
 
-        # add later for new customer registration after checkout
+        # added for new customer registration after guest checkout
         customer_data = {
             'email': guest_email,
             'first_name': data['form']['first_name'],
@@ -264,3 +273,6 @@ def process_order(request):
         request.session['customer_data'] = customer_data
 
     return JsonResponse('Payment submitted..', safe=False)
+
+
+# def update_cart(request):

@@ -57,7 +57,32 @@
 		    // Return null if not found
 		    return null;
 		}
-		let cart = JSON.parse(getCookie('cart'))
+
+        function updateCartAfterLogout(){
+            let url = "{% url 'store:update_cart_after_logout' %}"
+            fetch(url)
+
+            .then(response => {
+                if (!response.ok) {
+                    // handle error response
+                    console.log('Error: ', response.status, response.statusText)
+                    console.log('Unauthorized user tried to logout')
+                    location.reload();
+                }
+                return response.json();
+            })
+
+            .then((data) => {
+                cart = {}
+                document.cookie ='cart=' + JSON.stringify(data) + ";domain=;path=/"
+            })
+            .then(() => {
+                window.location.href = "{% url 'store:logout' %}"
+            })
+
+        }
+
+        let cart = JSON.parse(getCookie('cart'))
 
 		if (cart === undefined || cart === null){
 			cart = {}
@@ -121,7 +146,7 @@
                                 <a href="{% url "store:customer_orders" %}" style="display: inline-block; margin-right: 10px">
                                 <img id="orders-icon" src="{% static 'store/images/list.png' %}" alt="customer orders">
                                 </a>
-                                <a href="{% url "store:logout" %}" class="btn btn-danger log-btn">Logout</a>
+                                <a class="btn btn-danger log-btn" id = 'logout-btn'>Logout</a>
                                 </div>
                             {% else %}
                                 <div style="">
@@ -167,5 +192,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
 <script type="text/javascript" src="{% static 'store/js/cart.js' %}"></script>
+
+<script type="text/javascript">
+
+    if(document.getElementById("logout-btn")){
+        let LogoutBtn = document.getElementById("logout-btn")
+        LogoutBtn.addEventListener('click', updateCartAfterLogout)
+    }
+
+</script>
 </body>
 </html>
