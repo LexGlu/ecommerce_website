@@ -1,5 +1,6 @@
 {% extends 'store/base.html' %}
 {% load custom_filter %}
+{% load static %}
 
 {% block title %} Search result: "{{ query }}" | Search {% endblock %}
 
@@ -21,11 +22,15 @@
                         <h6><strong>{{product.name}}</strong></h6>
                         <hr>
                         <button data-product="{{product.id}}"
-                                data-action="add" class="btn btn-outline-success add-btn update-cart">
-                                Add to Cart
+                                data-action="add"
+                                class="btn btn-light update-cart add-to-cart"
+                                style=" float: right">
+                                <img
+                                    src="{% static 'store/images/shopping-cart-add.png' %}"
+                                    alt="add-to-cart" style="width: 20px; height: 20px">
                         </button>
-                        <a class="btn btn-outline-primary" href="{% url 'store:product' product.id %}">View</a>
-                        <h4 style="display: inline-block; float: right"><strong>{{product.price | currency}}</strong></h4>
+                        <h4 style="display: inline-block; float: left; margin-top: -3px"><strong>{{product.price | currency}}</strong></h4>
+                        <div style="height: 25px"></div>
                     </div>
                 </div>
             {% endfor %}

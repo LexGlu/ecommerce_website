@@ -156,12 +156,13 @@
 
 				<div class="cart-row">
 
-					<div style="flex:0.5; text-align: center; padding-bottom: 3px; padding-top: 3px">
-                        <a href="{% url 'store:product' item.product.id %}" style="text-decoration: none">
-                            <img class="row-image" src="{{ item.product.image.url }}"
-                                 alt="{{ item.product.name }}">
-                        </a>
+                    <div style="flex: .5; display: flex; justify-content: center;">
+                    <a href="{% url 'store:product' item.product.id %}" style="text-decoration: none">
+                        <img class="row-image" src="{{ item.product.image.url }}"
+                             alt="{{ item.product.name }}">
+                    </a>
                     </div>
+
 
                     <div style="flex:1.5; align-items: center; display: flex; padding-right: 25px; padding-left: 20px ">
 
@@ -180,8 +181,9 @@
                     </div>
 				</div>
 				{% endfor %}
-				<h5>Items:   {{ order.total_items }}</h5>
-				<h5>Total:   {{ order.total_value | currency }}</h5>
+                <div style="height: 10px"></div>
+				<h5><strong>Items: {{ order.total_items }}</strong></h5>
+				<h5><strong>Total: {{ order.total_value | currency }}</strong></h5>
             </div>
         </div>
 

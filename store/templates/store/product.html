@@ -1,5 +1,6 @@
 {% extends 'store/base.html' %}
 {% load custom_filter %}
+{% load static %}
 
 {% block title %}
     {{ product.name }}
@@ -31,11 +32,17 @@
                 <p>Stock: {{ product.stock }} item(s)</p>
             </div>
             <div class="product-action">
-                <button data-product="{{product.id}}"
+                    <button data-product="{{product.id}}"
                             data-action="add"
-                            class="btn btn-outline-success add-btn update-cart">
-                            Add to Cart
-                </button>
+                            class="btn btn-light update-cart add-to-cart"
+                            style="float: left; height: 50px; width: 50px">
+                            <img
+                                src="{% static 'store/images/shopping-cart-add.png' %}"
+                                alt="add-to-cart" style="width: 20px; height: 20px">
+                    </button>
+                    <div>
+                        <strong style="margin-left: 10px">Add to cart</strong>
+                    </div>
             </div>
         </div>
     </div>

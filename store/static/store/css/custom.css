@@ -120,7 +120,7 @@ a.product-link:hover{
 .cart-row{
 	display: flex;
     align-items: stretch;
-    /*padding-bottom: 10px;*/
+    padding-bottom: 10px;
     margin-bottom: 10px;
     border-bottom: 1px solid #ececec;
 

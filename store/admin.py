@@ -39,8 +39,9 @@ class AdminCustomer(admin.ModelAdmin):
         formatted_total_value.short_description = 'Total value'
         order_link.short_description = 'Order'
 
-    list_display = [full_name, email, 'phone', 'city', 'np_office']
-    fields = ['user', 'phone', 'city', 'np_office']
+    list_display = [email, full_name, 'phone', 'city', 'np_office']
+    readonly_fields = [email, full_name]
+    fields = ['user', email, full_name, 'phone', 'city', 'np_office']
     inlines = [OrderInline]
     search_fields = ('phone', 'user__email', 'user__first_name', 'user__last_name')
     list_filter = ['city']
