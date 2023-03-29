@@ -1,6 +1,7 @@
 from django import forms
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+
+email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+email_msg = 'Enter a valid email address (e.g. example@mail.com}'
 
 
 class LoginForm(forms.Form):
@@ -11,9 +12,12 @@ class LoginForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Sign in', css_class='btn-success sign-btn'))
 
-        self.fields['email'].widget.attrs.update({'placeholder': 'alex.turner@mail.com', 'class': 'example-label'})
-        self.fields['password'].widget.attrs.update({'placeholder': '********', 'class': 'example-label'})
+        self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'id': 'your_email', 'type': 'email',
+                                                  'name': 'your_email',
+                                                  'pattern': email_pattern,
+                                                  'title': email_msg
+                                                  })
+        self.fields['password'].widget.attrs.update({'placeholder': 'Password', 'id': 'your_pass', 'type': 'password',
+                                                     'name': 'your_pass',
+                                                     })
