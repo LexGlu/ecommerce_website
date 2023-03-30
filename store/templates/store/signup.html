@@ -100,5 +100,58 @@
     <!-- JS -->
     <script src="{% static 'store/auth_form/vendor/jquery/jquery.min.js'%}"></script>
     <script src="{% static 'store/auth_form/js/main.js'%}"></script>
+
+    <script>
+
+        // get the phone input field
+        const phoneField = document.getElementById('phone');
+        const prefix = '+38 ';
+
+        // add event listener for focus on the phone field
+        phoneField.addEventListener('focus', function () {
+          // if the current value is not starting with the prefix
+          if (!phoneField.value.startsWith(prefix)) {
+            // set the initial value with the prefix
+            phoneField.value = prefix;
+          }
+        });
+
+        // allow only digits
+        phoneField.addEventListener("input", function() {
+            let phoneValue = phoneField.value;
+            phoneValue = prefix + phoneValue.substring(4, ).replace(/\D/g, '');
+            phoneField.value = phoneValue;
+
+
+            // apply formatting
+            if (phoneValue.length > 7) {
+            phoneValue = phoneValue.substring(0, 7) + ' ' + phoneValue.substring(7);
+            }
+            if (phoneValue.length > 11) {
+            phoneValue = phoneValue.substring(0, 11) + ' ' + phoneValue.substring(11);
+            }
+            if (phoneValue.length > 14) {
+            phoneValue = phoneValue.substring(0, 14) + ' ' + phoneValue.substring(14);
+            }
+
+            // truncate to 17 characters if necessary
+            if (phoneValue.length > 17) {
+            phoneValue = phoneValue.substring(0, 17);
+            }
+
+            phoneField.value = phoneValue;
+        })
+
+        // add event listener to change phone number format on submit
+        document.getElementById('register-form').addEventListener('submit', function (e) {
+            // remove spaces
+            phoneField.value = phoneField.value.replace(/\s/g, '');
+        });
+
+
+    </script>
+
+
+
 </body>
 </html>

@@ -9,13 +9,13 @@ email_msg = 'Enter a valid email address (e.g. example@mail.com}'
 pass_pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$'
 pass_msg = 'Password must contain at least 8 characters, one uppercase letter, one lowercase letter and one number'
 phone_pattern = r'^\+380[0-9]{9}$'
-phone_msg = 'Enter a valid phone number (e.g. +380673332211)'
+phone_msg = 'Enter a valid phone number (e.g. +38 067 333 22 11).'
 
 
 class CustomerForm(UserCreationForm):
     """Form for the user registration."""
     phone = PhoneNumberField()
-    phone.error_messages['invalid'] = 'Enter a valid phone number (e.g. +380673332211).'
+    phone.error_messages['invalid'] = 'Enter a valid phone number (e.g. +38 067 333 22 11).'
     email = forms.EmailField()
     address = forms.CharField(max_length=128, required=False)
 
@@ -40,7 +40,7 @@ class CustomerForm(UserCreationForm):
                                                       'name': 're_pass', 'id': 're_pass', 'pattern': pass_pattern,
                                                       'title': pass_msg})
         self.fields['phone'].widget = forms.TextInput(
-            attrs={'placeholder': '+380', 'value': '+380', 'pattern': phone_pattern, 'title': phone_msg,
+            attrs={'placeholder': 'Phone', 'title': phone_msg,
                    'id': 'phone', 'name': 'phone', 'type': 'tel'})
 
     def save(self, commit=True):
