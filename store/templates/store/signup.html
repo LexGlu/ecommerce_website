@@ -78,6 +78,11 @@
                                 </div>
                             {% endif %}
 
+                            <div class="form-group hidden" id = 'code_error'>
+                                <label for="code_error_message"><i class="zmdi zmdi-alert-circle-o" style="color: #cc0000"></i></label>
+                                <div id='code_error_message' style="margin-left: 30px; color: #cc0000"></div>
+                            </div>
+
                             <div class="form-group">
                                 <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
                                 <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
@@ -100,58 +105,7 @@
     <!-- JS -->
     <script src="{% static 'store/auth_form/vendor/jquery/jquery.min.js'%}"></script>
     <script src="{% static 'store/auth_form/js/main.js'%}"></script>
-
-    <script>
-
-        // get the phone input field
-        const phoneField = document.getElementById('phone');
-        const prefix = '+38 ';
-
-        // add event listener for focus on the phone field
-        phoneField.addEventListener('focus', function () {
-          // if the current value is not starting with the prefix
-          if (!phoneField.value.startsWith(prefix)) {
-            // set the initial value with the prefix
-            phoneField.value = prefix;
-          }
-        });
-
-        // allow only digits
-        phoneField.addEventListener("input", function() {
-            let phoneValue = phoneField.value;
-            phoneValue = prefix + phoneValue.substring(4, ).replace(/\D/g, '');
-            phoneField.value = phoneValue;
-
-
-            // apply formatting
-            if (phoneValue.length > 7) {
-            phoneValue = phoneValue.substring(0, 7) + ' ' + phoneValue.substring(7);
-            }
-            if (phoneValue.length > 11) {
-            phoneValue = phoneValue.substring(0, 11) + ' ' + phoneValue.substring(11);
-            }
-            if (phoneValue.length > 14) {
-            phoneValue = phoneValue.substring(0, 14) + ' ' + phoneValue.substring(14);
-            }
-
-            // truncate to 17 characters if necessary
-            if (phoneValue.length > 17) {
-            phoneValue = phoneValue.substring(0, 17);
-            }
-
-            phoneField.value = phoneValue;
-        })
-
-        // add event listener to change phone number format on submit
-        document.getElementById('register-form').addEventListener('submit', function (e) {
-            // remove spaces
-            phoneField.value = phoneField.value.replace(/\s/g, '');
-        });
-
-
-    </script>
-
-
+    <script src="{% static 'store/js/signup.js'%}"></script>
 
 </body>
 </html>
