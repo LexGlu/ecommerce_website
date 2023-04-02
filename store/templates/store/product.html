@@ -2,36 +2,32 @@
 {% load custom_filter %}
 {% load static %}
 
+
+
 {% block title %}
     {{ product.name }}
 {% endblock %}
 
 {% block content %}
-<div class="product-detail">
-        <div class="product-image">
-            <img class="img-fluid" id="{{ product.image.url }}" src="{{ product.image.url }}" alt={{ product.name }}>
-        </div>
-        <div class="product-info">
-            <div class="product-name">
-                <h4>{{ product.name }}</h4>
-            </div>
-            <div class="product-description">
-                <p>{{ product.description }}</p>
-            </div>
-            <div class="product-price">
-                <p>{{ product.price | currency}}</p>
-            </div>
-            <div class="product-category">
-                <p>Category:
-                    <a class="product-link" href="{% url 'store:category' product.category.slug %}">
+
+
+  <div class="product-detail">
+    <div class="product-image" >
+      <img src="{{ product.get_image_url }}" alt="{{ product.name }}" id="{{ product.image.url }}">
+    </div>
+    <div class="product-info">
+      <h1 class="product-name">{{ product.name }}</h1>
+      <p class="product-price">{{ product.price | currency }}</p>
+      <p class="product-description">{{ product.description }}</p>
+      <p class="product-category">Category:
+          <a class="product-link" href="{% url 'store:category' product.category.slug %}">
                     {{ product.category.name }}
-                    </a>
-                </p>
-            </div>
-            <div class="product-stock">
-                <p>Stock: {{ product.stock }} item(s)</p>
-            </div>
-            <div class="product-action">
+          </a>
+      </p>
+
+      {% if product.is_in_stock %}
+        <p class="product-status in-stock">In stock</p>
+          <div class="product-action">
                     <button data-product="{{product.id}}"
                             data-action="add"
                             class="btn btn-light update-cart add-to-cart"
@@ -44,8 +40,36 @@
                         <strong style="margin-left: 10px">Add to cart</strong>
                     </div>
             </div>
-        </div>
+      {% else %}
+        <p class="product-status out-of-stock">Out of stock</p>
+      {% endif %}
     </div>
+  </div>
+  <div class="product-reviews">
+    <h2>Customer Reviews</h2>
+    {% for review in product.review_set.all %}
+      <div class="review">
+        <div class="review-rating">
+          {{ review.rating_stars | safe }}
+          <span class="rating-display">{{ review.get_rating_display }}</span>
+        </div>
+        <div class="review-comment">
+          <p>{{ review.comment }}</p>
+          <p class="review-author">Reviewed by {{ review.user.full_name }}</p>
+          <p class="review-date">{{ review.created_at|date:"F j, Y" }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p>No reviews yet.</p>
+    {% endfor %}
+    {% if user.is_authenticated %}
+
+    <a href="{% url 'store:add_review' product.id %}">Add a review</a>
+    {% else %}
+    <p><a href="{% url 'store:login' %}">Login</a> to add a review.</p>
+    {% endif %}
+  </div>
+
 
 <!-- The Modal -->
 <div id="myModal" class="modal">
@@ -61,7 +85,7 @@ let modal = document.getElementById('myModal');
 
 // Get the image and insert it inside the modal - use its "alt" text as a caption
 let img = document.getElementById('{{ product.image.url }}');
-let modalImg = document.getElementById("img01");
+let modalImg = document.getElementById('img01');
 let captionText = document.getElementById("caption");
 img.onclick = function(){
   modal.style.display = "block";

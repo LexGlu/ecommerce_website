@@ -22,6 +22,3 @@ class Product(models.Model):
             return self.image.url
         else:
             return ''
-
-    def get_price_display(self):
-        return '${:.2f}'.format(self.price)

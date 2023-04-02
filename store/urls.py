@@ -1,7 +1,7 @@
 from django.urls import path
 from .views.home import HomeView
 from .views.category import CategoryView
-from .views.product import ProductView
+from .views.product import ProductView, add_review
 from .views.auth import sign_up, log_in, log_out, update_cart_after_logout
 from .views.search import search_product
 from .views.cart import cart, checkout, update_item, process_order
@@ -22,4 +22,5 @@ urlpatterns = [
     path('update_cart/', update_cart_after_logout, name='update_cart_after_logout'),
     path('process_order/', process_order, name='process_order'),
     path('cabinet/orders/', customer_orders, name='customer_orders'),
+    path('add_review/<int:product_id>/', add_review, name='add_review')
 ]

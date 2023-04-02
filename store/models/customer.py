@@ -42,3 +42,9 @@ class Customer(models.Model):
             return Customer.objects.get(guest_phone=phone)
         except Customer.DoesNotExist:
             return False
+
+    @property
+    def full_name(self):
+        if self.user:
+            return self.user.first_name + ' ' + self.user.last_name
+        return self.guest_name
