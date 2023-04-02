@@ -39,15 +39,18 @@
                             {% endif %}
 						</div>
 
+                        {% if user.is_authenticated %}
                         <div class="form-field">
-                            <input required class="form-control" type="text" name="phone" placeholder="Phone..."
-                                   pattern="\+380[0-9]{9}" title="Enter a valid phone number (e.g. +380673332211)"
-                            {% if user.is_authenticated %}
-                                   value="{{ order.customer.phone }}">
-                            {% else %}
-                                >
-                            {% endif %}
+                            <input required class="form-control" type="tel" id="phone_checkout" name="phone_checkout" placeholder="Phone..."
+                                   value="{{ order.customer.phone | phone_format}}">
                         </div>
+                        {% else %}
+                            <div class="form-field">
+                            <input required class="form-control" type="tel" id="phone_checkout" name="phone_checkout" placeholder="Phone..."
+                                   value="">
+                        </div>
+                            <div id="cphone_checkout" class="emsg"></div>
+                            {% endif %}
 
                     </div>
 
@@ -76,7 +79,7 @@
 
                     <div id="form-button">
                         <hr>
-                        <input class="btn btn-success btn-block checkout-btn" type="submit" value="Continue">
+                        <input class="btn btn-success btn-block checkout-btn" type="submit" id="submit_form" value="Continue">
                     </div>
 
                     <div id="edit-form-button" class="hidden">
@@ -237,7 +240,7 @@
                     "first_name": form.first_name.value,
                     "last_name": form.last_name.value,
                     "email": form.email.value,
-                    "phone": form.phone.value,
+                    "phone": form.phone_checkout.value.replace(/\s/g, ''),
                     "shipping": shipping,
                     "payment_option": paymentOption.value,
                     "total": total,
@@ -288,5 +291,8 @@
             }
         })
     </script>
+
+    <script src="{% static 'store/js/checkout.js'%}"></script>
+
 
 {% endblock %}

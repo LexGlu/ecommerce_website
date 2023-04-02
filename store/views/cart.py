@@ -262,12 +262,16 @@ def process_order(request):
                     quantity=quantity,
                 )
 
+        # temporary solution for phone number validation!
+        # TODO: add phone number validation in frontend of checkout page
+        guest_phone_validated = str(guest_phone[:3]+' '+guest_phone[3:6]+' '+guest_phone[6:9]+' '+guest_phone[9:11]+' '
+                                    + guest_phone[11:])
         # added for new customer registration after guest checkout
         customer_data = {
             'email': guest_email,
             'first_name': data['form']['first_name'],
             'last_name': data['form']['last_name'],
-            'phone': guest_phone,
+            'phone': guest_phone_validated,
         }
 
         request.session['customer_data'] = customer_data

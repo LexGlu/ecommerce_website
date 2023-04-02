@@ -37,18 +37,6 @@ figure {
         background: darken($blue-color, 10%);
     };
 
-
-.form-submit.disabled {
-    background: $grey-light;
-    cursor: not-allowed;
-}
-
-#signup.disabled {
-    background: $grey-light;
-    color: #999;
-    cursor: not-allowed;
-}
-
 #signin {
     margin-top: 16px;
 }
@@ -264,4 +252,6 @@ label.valid {
     margin-right: 20px;
     margin-top: 10px;
 }
+
+
   

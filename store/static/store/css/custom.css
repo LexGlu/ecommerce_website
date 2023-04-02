@@ -398,3 +398,18 @@ a.product-link:hover{
     width: 100%;
   }
 }
+
+.err {
+	background: #ffe6ee;
+	border: 1px solid #b1395f;
+}
+.emsg {
+	color: #c12020;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+#cphone_checkout {
+	text-align: right;
+	margin-right: 16px;
+}
