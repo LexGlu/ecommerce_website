@@ -104,7 +104,17 @@ def update_item(request):
         order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
 
         if action == 'add':
-            order_item.quantity = (order_item.quantity + 1)
+            if product.is_in_stock() and order_item.quantity < product.stock:
+                order_item.quantity = (order_item.quantity + 1)
+            else:
+                return JsonResponse({
+                    'message': 'Out of stock',
+                    'cart-count': order.total_items,
+                    'cart-subtotal': order.total_value,
+                    'item-count': order_item.quantity,
+                    'item-total': order_item.total_value,
+                    'product-id': product_id,
+                }, status=400)
         elif action == 'remove':
             order_item.quantity = (order_item.quantity - 1)
         elif action == 'delete':
@@ -193,6 +203,10 @@ def process_order(request):
                 city=data['form']['city'],
                 np_office=data['form']['np_office'],
             )
+
+        for item in order.all_items:
+            item.product.stock -= item.quantity
+            item.product.save()
 
     else:
         guest_email = data['form']['email']

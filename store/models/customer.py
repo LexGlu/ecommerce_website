@@ -13,7 +13,9 @@ class Customer(models.Model):
     np_office = models.CharField(max_length=128, blank=True, default='')
 
     def __str__(self):
-        return self.user.email
+        if self.user:
+            return self.user.email
+        return self.guest_email
 
     @staticmethod
     def get_customer_by_user_email(email):

@@ -19,10 +19,4 @@ class Review(models.Model):
 
     @property
     def rating_stars(self):
-        stars = ''
-        for i in range(1, 6):
-            if i <= self.rating:
-                stars += '<i class="fa fa-star" aria-hidden="true"></i>'
-            else:
-                stars += '<i class="fa fa-star-o" aria-hidden="true"></i>'
-        return stars
+        return f'<i data-star="{self.rating}"></i>'

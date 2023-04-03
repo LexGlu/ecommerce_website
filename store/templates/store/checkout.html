@@ -13,36 +13,36 @@
                 <form id="form">
                     <div id="user-info">
                         <div class="form-field">
-                            <input required class="form-control" type="text" name="first_name" placeholder="First name..."
                             {% if user.is_authenticated %}
-                                value="{{ user.first_name }}">
+                                <input required class="form-control" type="text" name="first_name" disabled
+                                       placeholder="First name..." value="{{ user.first_name }}">
                             {% else %}
-                                >
+                                <input required class="form-control" type="text" name="first_name" placeholder="First name...">
                             {% endif %}
                         </div>
 
                         <div class="form-field">
-                            <input required class="form-control" type="text" name="last_name" placeholder="Last name..."
                             {% if user.is_authenticated %}
-                                value="{{ user.last_name }}">
+                                <input required class="form-control" type="text" name="last_name" disabled
+                                       placeholder="Last name..." value="{{ user.last_name }}">
                             {% else %}
-                                >
+                                <input required class="form-control" type="text" name="last_name" placeholder="Last name...">
                             {% endif %}
                         </div>
 
                         <div class="form-field">
-							<input required class="form-control" type="email" name="email" placeholder="Email..."
                             {% if user.is_authenticated %}
-                                   value="{{ user.email }}">
+							    <input required class="form-control" type="email" name="email" disabled
+                                       placeholder="Email..." value="{{ user.email }}">
                             {% else %}
-                                >
+                                <input required class="form-control" type="email" name="email" placeholder="Email...">
                             {% endif %}
 						</div>
 
                         {% if user.is_authenticated %}
                         <div class="form-field">
                             <input required class="form-control" type="tel" id="phone_checkout" name="phone_checkout" placeholder="Phone..."
-                                   value="{{ order.customer.phone | phone_format}}">
+                                   value="{{ order.customer.phone | phone_format}}" disabled>
                         </div>
                         {% else %}
                             <div class="form-field">
@@ -59,7 +59,7 @@
                         <p style="margin-left: 10px">Shipping Information:</p>
 						<hr>
 						<div class="form-field">
-							<input class="form-control" type="text" name="city" placeholder="City..."
+							<input class="form-control" type="text" name="city" placeholder="City..." required
                             {% if user.is_authenticated %}
                                    value="{{ order.customer.city }}">
                             {% else %}
@@ -68,6 +68,7 @@
 						</div>
 						<div class="form-field">
 							<input class="form-control" type="text" name="np_office" placeholder="Nova Poshta office..."
+                                   required
                             {% if user.is_authenticated %}
                                    value="{{ order.customer.np_office }}">
                             {% else %}

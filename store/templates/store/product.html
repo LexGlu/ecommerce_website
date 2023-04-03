@@ -10,6 +10,8 @@
 
 {% block content %}
 
+    <link rel="stylesheet" type="text/css" href="{% static 'store/css/comments.css' %}">
+
 
   <div class="product-detail">
     <div class="product-image" >
@@ -17,6 +19,12 @@
     </div>
     <div class="product-info">
       <h1 class="product-name">{{ product.name }}</h1>
+        {% if product.total_reviews > 0 %}
+        <span class="review-rating" style="margin-bottom: 20px">
+            {{ product.rating_stars | safe }}
+            {{ product.average_rating }}/5 ({{ product.total_reviews }} reviews)
+        </span>
+        {% endif %}
       <p class="product-price">{{ product.price | currency }}</p>
       <p class="product-description">{{ product.description }}</p>
       <p class="product-category">Category:
@@ -46,29 +54,71 @@
     </div>
   </div>
   <div class="product-reviews">
-    <h2>Customer Reviews</h2>
-    {% for review in product.review_set.all %}
-      <div class="review">
-        <div class="review-rating">
-          {{ review.rating_stars | safe }}
-          <span class="rating-display">{{ review.get_rating_display }}</span>
-        </div>
-        <div class="review-comment">
-          <p>{{ review.comment }}</p>
-          <p class="review-author">Reviewed by {{ review.user.full_name }}</p>
-          <p class="review-date">{{ review.created_at|date:"F j, Y" }}</p>
-        </div>
-      </div>
-    {% empty %}
-      <p>No reviews yet.</p>
+
+<div>
+<div class="be-comment-block">
+	<h2 class="comments-title">Customer reviews ({{ product.total_reviews }})</h2>
+
+    {% if product.total_reviews > 0 %}
+        {% for review in product.all_reviews %}
+	<div class="be-comment">
+		<div class="be-comment-content">
+
+				<span class="be-comment-name" style="width: 15%">
+					{{ review.user.full_name }}
+                </span>
+                 <span class="review-rating" style="width: 35%">
+                    {{ review.rating_stars | safe }}
+                 </span>
+				<span class="be-comment-time" style="width: 49%">
+					<i class="fa fa-clock-o"></i>
+					{{ review.created_at|date:"F j, Y" }}
+				</span>
+
+			{% if review.comment %}
+            <p class="be-comment-text">
+				{{ review.comment }}
+			</p>
+            {% endif %}
+		</div>
+	</div>
     {% endfor %}
+    {% endif %}
     {% if user.is_authenticated %}
 
     <a href="{% url 'store:add_review' product.id %}">Add a review</a>
     {% else %}
     <p><a href="{% url 'store:login' %}">Login</a> to add a review.</p>
     {% endif %}
-  </div>
+</div>
+</div>
+
+
+
+
+
+{#    {% for review in product.review_set.all %}#}
+{#      <div class="review">#}
+{#        <div class="review-rating">#}
+{#          {{ review.rating_stars | safe }}#}
+{#          <span class="rating-display">{{ review.get_rating_display }}</span>#}
+{#        </div>#}
+{#        <div class="review-comment">#}
+{#          <p>{{ review.comment }}</p>#}
+{#          <p class="review-author">Reviewed by {{ review.user.full_name }}</p>#}
+{#          <p class="review-date">{{ review.created_at|date:"F j, Y" }}</p>#}
+{#        </div>#}
+{#      </div>#}
+{#    {% empty %}#}
+{#      <p>No reviews yet.</p>#}
+{#    {% endfor %}#}
+{#    {% if user.is_authenticated %}#}
+{##}
+{#    <a href="{% url 'store:add_review' product.id %}">Add a review</a>#}
+{#    {% else %}#}
+{#    <p><a href="{% url 'store:login' %}">Login</a> to add a review.</p>#}
+{#    {% endif %}#}
+{#  </div>#}
 
 
 <!-- The Modal -->

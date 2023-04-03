@@ -23,7 +23,11 @@
                     </a>
 
                     <hr>
-                    <button data-product="{{product.id}}"
+
+                    {% if not product.is_in_stock %}
+                        <p style="float: right; color: #b02a37">Out of stock</p>
+                    {% else %}
+                        <button data-product="{{product.id}}"
                             data-action="add"
                             class="btn btn-light update-cart add-to-cart"
                             style=" float: right">
@@ -31,6 +35,10 @@
                                 src="{% static 'store/images/shopping-cart-add.png' %}"
                                 alt="add-to-cart" style="width: 20px; height: 20px">
                     </button>
+                    {% endif %}
+
+
+
                     <h4 style="display: inline-block; float: left; margin-top: -3px"><strong>{{product.price | currency}}</strong></h4>
                     <div style="height: 25px"></div>
                 </div>
@@ -40,12 +48,3 @@
 
 
 {% endblock %}
-
-{#<script type="text/javascript">#}
-{#    #}
-{#    function updateCartAfterLogout() {#}
-{#        let cart = {}#}
-{#        #}
-{#    }#}
-{#    #}
-{#</script>#}

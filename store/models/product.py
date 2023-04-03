@@ -22,3 +22,26 @@ class Product(models.Model):
             return self.image.url
         else:
             return ''
+
+    @property
+    def all_reviews(self):
+        return self.review_set.all()
+
+    @property
+    def total_reviews(self):
+        return self.review_set.count()
+
+    @property
+    def average_rating(self):
+        reviews = self.all_reviews
+        if reviews:
+            total = 0
+            for review in reviews:
+                total += review.rating
+            return round(total / reviews.count(), 1)
+        else:
+            return 0
+
+    @property
+    def rating_stars(self):
+        return f'<i data-star="{self.average_rating}"></i>'
