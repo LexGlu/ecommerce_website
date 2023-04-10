@@ -29,3 +29,7 @@ celerybeat-schedule
 # logs
 logfile
 *.log
+# env
+.env
+# docker
+.dockerignore
