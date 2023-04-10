@@ -1,2 +1,11 @@
-docker-compose.yml
-Dockerfile
+venv
+Dockerfile*
+*.md
+docker-compose*.yml
+.gitignore
+LICENSE
+.idea
+.git
+.dockerignore
+.DS_Store
+__pycache__

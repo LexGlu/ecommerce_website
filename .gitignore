@@ -32,4 +32,3 @@ logfile
 # env
 .env
 # docker
-.dockerignore
