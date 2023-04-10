@@ -1,0 +1,53 @@
+version: "3.8"
+
+
+services:
+  db:
+    image: postgres
+    restart: always
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    env_file: .env
+    command: >
+      sh -c "python manage.py migrate &&
+             if [ $(cat db_dump/db_empty) = 'True' ]; then
+                python manage.py shell -c 'from django.contrib.contenttypes.models import ContentType; ContentType.objects.all().delete()' &&
+                python manage.py loaddata /usr/src/app/db_dump/data.json &&
+                echo 'False' > db_dump/db_empty;
+             fi &&
+             python manage.py runserver 0.0.0.0:8000"
+
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./db_dump:/usr/src/app/db_dump
+      - ./ecom_website:/usr/src/app/ecom_website
+      - ./staticfiles:/usr/src/app/staticfiles
+      - ./store:/usr/src/app/store
+      - ./uploads:/usr/src/app/uploads
+      - type: bind
+        source: .env
+        target: /usr/src/app/.env
+      - type: bind
+        source: ./manage.py
+        target: /usr/src/app/manage.py
+      - type: bind
+        source: ./requirements.txt
+        target: /usr/src/app/requirements.txt
+
+    restart: always
+    depends_on:
+      - db
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres_data:
