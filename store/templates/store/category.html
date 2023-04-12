@@ -8,6 +8,8 @@
 
 {% block content %}
 <h3>{{ category.name }}</h3>
+
+    {% if products %}
         <div class="row">
             {% for product in products %}
             <div class="col-lg-4">
@@ -34,5 +36,8 @@
             </div>
     {% endfor %}
         </div>
+    {% else %}
+        <h4>No products found</h4>
+    {% endif %}
 
 {% endblock %}

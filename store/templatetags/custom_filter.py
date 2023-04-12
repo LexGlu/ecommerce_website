@@ -1,3 +1,4 @@
+from bson import Decimal128
 from django import template
 
 register = template.Library()
@@ -5,6 +6,8 @@ register = template.Library()
 
 @register.filter(name='currency')
 def currency(number):
+    if isinstance(number, Decimal128):
+        number = number.to_decimal()
     return f'₴ {number:,}'.replace(',', ' ')
 
 

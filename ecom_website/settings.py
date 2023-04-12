@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = int(os.environ.get('DEBUG'))
+DEBUG = True
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'phonenumber_field',
+    'djongo',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
@@ -88,13 +89,16 @@ WSGI_APPLICATION = "ecom_website.wsgi.application"
 
 DATABASES = {
     'default': {
-            'ENGINE': os.environ.get('POSTGRES_ENGINE', 'django.db.backends.db.sqlite3'),
-            'NAME': os.environ.get('POSTGRES_DATABASE', BASE_DIR / 'db.sqlite3'),
-            'USER': os.environ.get('POSTGRES_USER', 'user'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password'),
-            'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-            'PORT': os.environ.get('POSTGRES_PORT', '5432')
-        }
+        'ENGINE': 'djongo',
+        'NAME': 'mongodb-test',
+        'ENFORCE_SCHEMA': False,
+        'CLIENT': {
+            'host': 'mongo',
+            'port': 27017,
+            'username': 'root',
+            'password': 'example',
+        },
+    }
 }
 
 # Password validation
