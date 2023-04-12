@@ -1,8 +1,8 @@
-version: "3"
+version: "3.9"
 
 services:
   db:
-    image: postgres
+    image: postgres:15.2-alpine
     restart: always
     env_file: .env
     volumes:
@@ -21,7 +21,7 @@ services:
              fi &&
              gunicorn ecom_website.wsgi:application --bind 0.0.0.0:8000"
     volumes:
-      - ./db_dump:/usr/src/app/db_dump
+      - db_dump:/usr/src/app/db_dump
       - ./ecom_website:/usr/src/app/ecom_website
       - static_volume:/usr/src/app/static
       - media_volume:/usr/src/app/media
@@ -40,7 +40,7 @@ services:
       - db
 
   nginx:
-    image: nginx
+    image: nginx:1.23.4-alpine
     restart: always
     ports:
       - "80:80"
@@ -52,7 +52,7 @@ services:
       - django_ecom_app
 
   adminer:
-    image: adminer
+    image: adminer:4.8.1-standalone
     restart: always
     ports:
       - "8080:8080"
@@ -61,3 +61,4 @@ volumes:
   postgres_data:
   static_volume:
   media_volume:
+  db_dump:
