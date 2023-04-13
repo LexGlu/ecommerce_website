@@ -23,12 +23,15 @@ services:
       - mongo
 
   django_ecom_app:
-    image: django_ecom_mongo
+    build:
+        context: .
+        dockerfile: ./Dockerfile-mongo
     env_file: .env
     command: >
       sh -c "python manage.py makemigrations &&
              python manage.py migrate &&
              python manage.py collectstatic --noinput &&
+             echo \"from django.contrib.auth.models import User; from store.models import Customer; User.objects.create_superuser('admin', 'admin@a.aa', 'admin', first_name='Root', last_name='Broot'); Customer.objects.create(user=User.objects.get(pk=1), phone='+380631112233', city='Kherson', np_office='404')\" | python manage.py shell &&
              gunicorn ecom_website.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - ./ecom_website:/usr/src/app/ecom_website

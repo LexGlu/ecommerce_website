@@ -1,6 +1,7 @@
 from django.db import models
 from .product import Product
 from .customer import Customer
+from bson import Decimal128
 
 
 class Order(models.Model):
@@ -54,6 +55,9 @@ class OrderItem(models.Model):
 
     @property
     def total_value(self):
+        if isinstance(self.product.price, Decimal128):
+            price = self.product.price.to_decimal()
+            return price * self.quantity
         return self.product.price * self.quantity
 
 

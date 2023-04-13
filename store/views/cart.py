@@ -24,7 +24,7 @@ def cart(request):
         if guest_cart:
             for product_id in guest_cart:
                 product = Product.objects.get(id=product_id)
-                product_total = (product.price * guest_cart[product_id]['quantity'])
+                product_total = (product.price.to_decimal() * guest_cart[product_id]['quantity'])
                 product_quantity = guest_cart[product_id]['quantity']
                 order['total_value'] += product_total
                 order['total_items'] += product_quantity
@@ -68,7 +68,7 @@ def checkout(request):
         for product_id in order_data:
             product = Product.objects.get(id=product_id)
 
-            product_total = (product.price * order_data[product_id]['quantity'])
+            product_total = decimal.Decimal(product.price.to_decimal() * order_data[product_id]['quantity'])
             product_quantity = order_data[product_id]['quantity']
             order['total_value'] += product_total
             order['total_items'] += product_quantity
@@ -153,11 +153,11 @@ def update_item(request):
         cart_subtotal = 0
         for i in guest_cart:
             product_in_cart = Product.objects.get(id=i)
-            cart_subtotal += product_in_cart.price * guest_cart[i]['quantity']
+            cart_subtotal += product_in_cart.price.to_decimal() * guest_cart[i]['quantity']
 
         try:
             item_count = guest_cart.get(product_id).get('quantity')
-            item_total = item_count * product.price
+            item_total = item_count * product.price.to_decimal()
             print(f"Item Count: {item_count} ")
         except Exception as e:
             print(e)
@@ -187,8 +187,8 @@ def process_order(request):
         total = decimal.Decimal(data['form']['total'])
         order.transaction_id = transaction_id
 
-        print(f"Total: {total} type {type(total)} | Order Total: {order.total_value} type {type(order.total_value)}")
-        print(total == order.total_value)
+        # print(f"Total: {total} type {type(total)} | Order Total: {order.total_value} type {type(order.total_value)}")
+        # print(total == order.total_value)
 
         if total == order.total_value:
             order.status = 'processing'
@@ -205,8 +205,7 @@ def process_order(request):
             )
 
         for item in order.all_items:
-            item.product.stock -= item.quantity
-            item.product.save()
+            item.product.save_stock(item.quantity)
 
     else:
         guest_email = data['form']['email']
@@ -268,13 +267,14 @@ def process_order(request):
         for item in items:
             product = Product.objects.get(id=item)
             quantity = items[item]['quantity']
-            item_value = product.price * quantity
+            item_value = product.price.to_decimal() * quantity
             if item_value:
                 OrderItem.objects.create(
                     order=order,
                     product=product,
                     quantity=quantity,
                 )
+                product.save_stock(quantity)
 
         # temporary solution for phone number validation!
         # TODO: add phone number validation in frontend of checkout page

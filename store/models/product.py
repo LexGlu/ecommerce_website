@@ -1,5 +1,6 @@
 from django.db import models
 from .category import Category
+from decimal import Decimal
 
 
 class Product(models.Model):
@@ -45,3 +46,8 @@ class Product(models.Model):
     @property
     def rating_stars(self):
         return f'<i data-star="{self.average_rating}"></i>'
+
+    def save_stock(self, quantity):
+        self.stock -= quantity
+        self.price = Decimal(str(self.price.to_decimal()))
+        self.save()
