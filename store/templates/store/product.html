@@ -85,7 +85,6 @@
     {% endfor %}
     {% endif %}
     {% if user.is_authenticated %}
-
     <a href="{% url 'store:add_review' product.id %}">Add a review</a>
     {% else %}
     <p><a href="{% url 'store:login' %}">Login</a> to add a review.</p>

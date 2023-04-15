@@ -23,6 +23,8 @@ services:
     volumes:
       - db_dump:/usr/src/app/db_dump
       - ./ecom_website:/usr/src/app/ecom_website
+      - ./store:/usr/src/app/store
+      - ./api:/usr/src/app/api
       - static_volume:/usr/src/app/static
       - media_volume:/usr/src/app/media
       - type: bind

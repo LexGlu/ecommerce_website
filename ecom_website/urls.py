@@ -21,6 +21,8 @@ from . import settings
 urlpatterns = [
     path('', include('store.urls')),
     path("admin/", admin.site.urls),
+    path('api/', include('api.urls')),
+    path('api/', include('rest_framework.urls')),
 ]
 
 if settings.DEBUG:

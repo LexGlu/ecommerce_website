@@ -45,3 +45,4 @@ class Product(models.Model):
     @property
     def rating_stars(self):
         return f'<i data-star="{self.average_rating}"></i>'
+
