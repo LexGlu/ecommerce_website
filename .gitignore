@@ -32,3 +32,4 @@ logfile
 # env
 .env
 # docker
+/ssl/

@@ -9,7 +9,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   django_ecom_app:
-    build: .
+    image: lexglu/django-web-app
     env_file: .env
     command: >
       sh -c "python manage.py migrate &&
