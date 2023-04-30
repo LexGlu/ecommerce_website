@@ -3,6 +3,7 @@ version: "3.9"
 services:
   db:
     image: postgres:15.2-alpine
+    container_name: postgres_db
     restart: always
     env_file: .env
     volumes:
@@ -10,6 +11,7 @@ services:
 
   django_ecom_app:
     build: .
+    container_name: django_ecom_app
     env_file: .env
     command: >
       sh -c "python manage.py migrate &&
@@ -19,6 +21,7 @@ services:
                python manage.py loaddata /usr/src/app/db_dump/data.json &&
                echo 'False' > db_dump/db_empty;
              fi &&
+             celery multi start worker1 -A ecom_website -l info &&
              gunicorn ecom_website.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - db_dump:/usr/src/app/db_dump
@@ -40,9 +43,11 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
 
   nginx:
     image: nginx:1.23.4-alpine
+    container_name: nginx
     restart: always
     env_file: .env
     ports:
@@ -58,10 +63,16 @@ services:
       - django_ecom_app
 
   adminer:
+    container_name: adminer
     image: adminer:4.8.1-standalone
     restart: always
     ports:
       - "8080:8080"
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
 
 volumes:
   postgres_data:

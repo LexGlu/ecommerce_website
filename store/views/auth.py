@@ -8,6 +8,7 @@ from store.models.customer import Customer
 from store.forms.signup_form import CustomerForm
 from store.forms.login_form import LoginForm
 from django.contrib.auth import login, logout, authenticate
+from store.tasks import send_welcome_email
 
 
 def log_in(request):
@@ -85,6 +86,11 @@ def sign_up(request):
 
             customer = form.save()
             login(request, customer.user)
+
+            try:
+                send_welcome_email.delay(customer.user.id)
+            except Exception as e:
+                print(e)
             return redirect('store:home')
 
         else:

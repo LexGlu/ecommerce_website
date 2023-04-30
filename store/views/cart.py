@@ -6,6 +6,7 @@ from store.models import Order, Product, OrderItem, ShippingInfo, Customer
 from django.http import JsonResponse
 import json
 import datetime
+from store.tasks import send_order_detail_email
 
 
 def cart(request):
@@ -208,6 +209,9 @@ def process_order(request):
             item.product.stock -= item.quantity
             item.product.save()
 
+        if order.status == 'processing':
+            send_order_detail_email(order.id)
+
     else:
         guest_email = data['form']['email']
         guest_phone = data['form']['phone']
@@ -276,8 +280,6 @@ def process_order(request):
                     quantity=quantity,
                 )
 
-        # temporary solution for phone number validation!
-        # TODO: add phone number validation in frontend of checkout page
         guest_phone_validated = str(guest_phone[:3]+' '+guest_phone[3:6]+' '+guest_phone[6:9]+' '+guest_phone[9:11]+' '
                                     + guest_phone[11:])
         # added for new customer registration after guest checkout
@@ -289,8 +291,7 @@ def process_order(request):
         }
 
         request.session['customer_data'] = customer_data
+        send_order_detail_email(order.id)
 
     return JsonResponse('Payment submitted..', safe=False)
 
-
-# def update_cart(request):

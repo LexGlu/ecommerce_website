@@ -42,6 +42,13 @@ class Order(models.Model):
     def all_items(self):
         return self.orderitem_set.all()
 
+    @property
+    def shipping_city(self):
+        return self.shippinginfo_set.all().last().city
+
+    def shipping_np_office(self):
+        return self.shippinginfo_set.all().last().np_office
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)

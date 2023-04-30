@@ -106,6 +106,13 @@
     <script src="{% static 'store/auth_form/vendor/jquery/jquery.min.js'%}"></script>
     <script src="{% static 'store/auth_form/js/main.js'%}"></script>
     <script src="{% static 'store/js/signup.js'%}"></script>
-
+    <script>
+        $(document).ready(function(){
+            {% if verification_msg %}
+                alert('{{ verification_msg }}')
+                window.location.href = {% url 'store:home' %}
+            {% endif %}
+        });
+    </script>
 </body>
 </html>

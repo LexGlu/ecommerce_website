@@ -18,7 +18,9 @@
                 </a>
                 </div>
                 <div class="box-element product">
-                    <h6><strong>{{product.name}}</strong></h6>
+                    <a class= "product-link" href="{% url 'store:product' product.id %}">
+                        <h6><strong>{{product.name}}</strong></h6>
+                    </a>
                     <hr>
                     <button data-product="{{product.id}}"
                             data-action="add"
