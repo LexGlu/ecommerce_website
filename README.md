@@ -10,6 +10,7 @@ Technologies used:
 - Django REST Framework
 - Docker and Docker Compose
 - PostgreSQL with Adminer
+- Celery with Redis as message broker
 - Nginx
 - Gunicorn
 - AWS EC2
@@ -25,6 +26,7 @@ Some of the features:
 - Product search
 - Product reviews
 - Dynamic shopping cart and checkout
+- Async email sending with Celery
 - Order history
 - Admin panel
 - REST API using Django REST Framework
