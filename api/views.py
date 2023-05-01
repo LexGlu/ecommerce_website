@@ -39,7 +39,6 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
         if not product:
             product = Product.objects.filter(pk=self.kwargs['pk'])
             cache.set(key, product)
-        else:
         return product
 
 
@@ -56,7 +55,6 @@ class ReviewCreate(generics.CreateAPIView, mixins.DestroyModelMixin):
         if not review:
             review = Review.objects.filter(user=customer, product_id=product_id)
             cache.set(key, review)
-        else:
         return review
 
     def perform_create(self, serializer):
