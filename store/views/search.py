@@ -12,7 +12,9 @@ def search_product(request):
     products = cache.get(q)
 
     if not products:
-        products = Product.objects.filter(
+        all_products = cache.get('all_products') or Product.objects.all()
+
+        products = all_products.filter(
             Q(name__icontains=query) |
             Q(description__icontains=query) |
             Q(category__name__icontains=query)

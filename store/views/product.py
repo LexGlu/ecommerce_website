@@ -12,11 +12,8 @@ class ProductView(View):
         key = f'product_{product_id}'
         product = cache.get(key)
         if not product:
-            all_products = cache.get('all_products')
-            if all_products:
-                product = all_products.get(id=product_id)
-            if not product:
-                product = get_object_or_404(Product, id=product_id)
+            all_products = cache.get('all_products') or Product.objects.all()
+            product = get_object_or_404(all_products, pk=product_id)
             cache.set(key, product)
 
         context = {'product': product}
