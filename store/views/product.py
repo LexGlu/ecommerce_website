@@ -3,12 +3,22 @@ from django.views import View
 from store.models import Product, Review
 from django.contrib.auth.decorators import login_required
 from store.forms.review_form import ReviewForm
+from django.core.cache import cache
 
 
 class ProductView(View):
     @staticmethod
     def get(request, product_id):
-        product = get_object_or_404(Product, id=product_id)
+        key = f'product_{product_id}'
+        product = cache.get(key)
+        if not product:
+            all_products = cache.get('all_products')
+            if all_products:
+                product = all_products.get(id=product_id)
+            if not product:
+                product = get_object_or_404(Product, id=product_id)
+            cache.set(key, product)
+
         context = {'product': product}
         return render(request, 'store/product.html', context)
 

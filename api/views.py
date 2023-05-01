@@ -7,12 +7,24 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from django.core.cache import cache
 
 
 class ProductList(generics.ListCreateAPIView):
-    queryset = Product.objects.all()
+    key = 'all_products'
+
+    def get_queryset(self):
+        queryset = cache.get(self.key)
+        if not queryset:
+            print('cache miss')
+            queryset = Product.objects.all()
+            cache.set(self.key, queryset)
+        else:
+            print('cache hit')
+        return queryset
+
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAdminUser]
 
@@ -22,7 +34,13 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        return Product.objects.filter(pk=self.kwargs['pk'])
+        key = f'product_{self.kwargs["pk"]}'
+        product = cache.get(key)
+        if not product:
+            product = Product.objects.filter(pk=self.kwargs['pk'])
+            cache.set(key, product)
+        else:
+        return product
 
 
 class ReviewCreate(generics.CreateAPIView, mixins.DestroyModelMixin):
@@ -32,7 +50,14 @@ class ReviewCreate(generics.CreateAPIView, mixins.DestroyModelMixin):
     def get_queryset(self):
         customer = self.request.user.customer
         product_id = self.kwargs['product_id']
-        return Review.objects.filter(user=customer, product_id=product_id)
+
+        key = f'review_{customer.id}_{product_id}'
+        review = cache.get(key)
+        if not review:
+            review = Review.objects.filter(user=customer, product_id=product_id)
+            cache.set(key, review)
+        else:
+        return review
 
     def perform_create(self, serializer):
         if self.get_queryset().exists():
