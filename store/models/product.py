@@ -11,6 +11,9 @@ class Product(models.Model):
     stock = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='uploads/products/', blank=True, null=True)
 
+    class Meta:
+        ordering = ('-price', 'name', )
+
     def __str__(self):
         return self.name
 
