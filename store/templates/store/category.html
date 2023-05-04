@@ -8,6 +8,21 @@
 
 {% block content %}
 <h3>{{ category.name }}</h3>
+    <div class="catalog-head">
+        <div class="catalog-sort-title">
+            Sort by:
+        </div>
+        <div class="catalog-sort-item">
+               <a href="?sort=cheap" class="catalog-sort-link">&nbsp&nbspPrice: Low to High&nbsp&nbsp</a>
+        </div>
+        <div class="catalog-sort-item">
+               <a href="?sort=expensive" class="catalog-sort-link">&nbsp&nbspPrice: High to Low&nbsp&nbsp</a>
+        </div>
+        <div class="catalog-sort-item">
+               <a href="?sort=rating" class="catalog-sort-link">&nbsp&nbspHighest rating&nbsp&nbsp</a>
+        </div>
+    </div>
+
         <div class="row">
             {% for product in page_obj %}
             <div class="col-lg-4">
@@ -22,6 +37,7 @@
                         <h6 class="product-title"><strong>{{product.name}}</strong></h6>
                     </a>
                     <hr>
+                    <div style="height: 25px">
                     <button data-product="{{product.id}}"
                             data-action="add"
                             class="btn btn-light update-cart add-to-cart"
@@ -30,8 +46,11 @@
                                 src="{% static 'store/images/shopping-cart-add.png' %}"
                                 alt="add-to-cart" style="width: 20px; height: 20px">
                     </button>
+                    {% if product.total_reviews > 0 %}
+                        &nbsp&nbsp{{ product.rating_stars | safe }}
+                    {% endif %}
                     <h4 style="display: inline-block; float: left; margin-top: -3px"><strong>{{product.price | currency}}</strong></h4>
-                    <div style="height: 25px"></div>
+                    </div>
                 </div>
             </div>
             {% endfor %}

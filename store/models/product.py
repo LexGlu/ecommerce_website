@@ -36,13 +36,14 @@ class Product(models.Model):
 
     @property
     def average_rating(self):
-        reviews = self.all_reviews
-        if reviews:
-            total = 0
-            for review in reviews:
-                total += review.rating
-            return round(total / reviews.count(), 1)
-        else:
+        try:
+            reviews = self.all_reviews
+            if not reviews:
+                return 0
+            total = sum(review.rating for review in reviews)/reviews.count()
+            return round(total, 1)
+        except Exception as e:
+            print(e)
             return 0
 
     @property

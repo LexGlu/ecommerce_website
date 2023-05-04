@@ -8,7 +8,22 @@
 
 {% block content %}
 
-    <div class="row" style="padding-top: 5px">
+    <div class="catalog-head" style="margin-top: 10px">
+        <div class="catalog-sort-title">
+            Sort by:
+        </div>
+        <div class="catalog-sort-item">
+               <a href="?sort=cheap" class="catalog-sort-link">&nbsp&nbspPrice: Low to High&nbsp&nbsp</a>
+        </div>
+        <div class="catalog-sort-item">
+               <a href="?sort=expensive" class="catalog-sort-link">&nbsp&nbspPrice: High to Low&nbsp&nbsp</a>
+        </div>
+        <div class="catalog-sort-item">
+               <a href="?sort=rating" class="catalog-sort-link">&nbsp&nbspHighest rating&nbsp&nbsp</a>
+        </div>
+    </div>
+
+    <div class="row">
 
         {% for product in page_obj %}
             <div class="col-lg-4">
@@ -26,6 +41,7 @@
 
                     <hr>
 
+                <div style="height: 25px">
                     {% if not product.is_in_stock %}
                         <p style="float: right; color: #b02a37">Out of stock</p>
                     {% else %}
@@ -40,11 +56,13 @@
                     {% endif %}
 
 
-
+                    {% if product.total_reviews > 0 %}
+                        &nbsp&nbsp{{ product.rating_stars | safe }}
+                    {% endif %}
                     <h4 style="display: inline-block; float: left; margin-top: -3px"><strong>{{product.price | currency}}</strong></h4>
-                    <div style="height: 25px"></div>
                 </div>
             </div>
+    </div>
         {% endfor %}
     </div>
 

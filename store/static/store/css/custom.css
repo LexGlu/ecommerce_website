@@ -670,3 +670,36 @@ label.star:before {
 [data-star^="4.8"]::after{width:96%}
 [data-star^="4.9"]::after{width:98%}
 [data-star^="5"]::after{width:100%}
+
+/* for catalog sorting */
+
+.catalog-head {
+  text-align: right;
+}
+
+.catalog-sort-title,
+.catalog-sort-item {
+  display: inline-block;
+}
+
+.catalog-sort-item {
+  background-color: #eee;
+  border-radius: 30px;
+  margin-right: 10px;
+  margin-bottom: 3px;
+  font-size: 16px;
+}
+
+.catalog-sort-item a {
+    text-decoration: none;
+	color: black;
+}
+
+.catalog-sort-item a:hover {
+	font-weight: bold;
+}
+
+.catalog-sort-item a:active,
+.catalog-sort-item a:focus {
+  outline: none;
+}

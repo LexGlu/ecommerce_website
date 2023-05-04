@@ -1,5 +1,5 @@
-from django.shortcuts import render, get_list_or_404, get_object_or_404
-from store.models import Product, Category
+from django.shortcuts import render
+from store.models import Product
 from django.views import View
 from django.core.paginator import Paginator
 from django.core.cache import cache
@@ -16,7 +16,20 @@ class CategoryView(View):
             products = all_products.filter(category__slug=category_slug)
             cache.set(key, products)
 
-        category = products.first().category
+        sort_param = request.GET.get('sort')
+        if sort_param:
+            sort_options = {
+                'cheap': products.order_by('price'),
+                'expensive': products.order_by('-price'),
+                'rating': sorted(products, key=lambda p: p.average_rating, reverse=True),
+            }
+            products = sort_options.get(sort_param, products)
+
+        try:
+            category = products.first().category
+        except AttributeError:
+            category = products[0].category or None
+
         paginator = Paginator(products, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
