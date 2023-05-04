@@ -28,7 +28,8 @@ class HomeView(View):
         paginator = Paginator(products, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        context = {'page_obj': page_obj}
+
+        context = {'page_obj': page_obj, 'sort': sort_param}
         return render(request, 'store/home.html', context)
 
 

@@ -33,5 +33,5 @@ class CategoryView(View):
         paginator = Paginator(products, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        context = {'page_obj': page_obj, 'category': category}
+        context = {'page_obj': page_obj, 'category': category, 'sort': sort_param}
         return render(request, 'store/category.html', context)
