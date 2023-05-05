@@ -696,7 +696,7 @@ label.star:before {
 }
 
 .catalog-sort-item a:hover {
-	font-weight: bold;
+	color: limegreen;
 }
 
 .catalog-sort-item a:active,
