@@ -1,13 +1,26 @@
 import json
 import psycopg2
 import random
-import requests
+import asyncio
+import aiohttp
 
-def upload_image(image_url):
+
+async def upload_image(image_url):
     path = f"/usr/src/app/media/uploads/products/{image_url.split('/')[-1]}"
-    with open(path, 'wb') as f:
-        f.write(requests.get(image_url).content)
+    async with aiohttp.ClientSession() as session:
+        async with session.get(image_url) as response:
+            if response.status == 200:
+                with open(path, 'wb') as f:
+                    while True:
+                        chunk = await response.content.read(1024)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        print(f"Downloaded {image_url}")
+            else:
+                print(f"Failed to download {image_url}")
     return None
+
 
 # connect to the database
 connection = psycopg2.connect(
@@ -34,11 +47,11 @@ cursor = connection.cursor()
 
 db_categories = {
     'Смартфони і мобільні телефони': 1,
-    'Телевізори': 5,
+    'Телевізори': 4,
     'Ігрові консолі': 6,
-    'Ноутбуки': 7,
-    '📱 Планшети': 8,
-    'Монітори': 9,
+    'Ноутбуки': 5,
+    '📱 Планшети': 7,
+    'Монітори': 8,
 }
 
 # open jsonl file
@@ -58,7 +71,11 @@ with open('allo_products.jsonl') as file:
         image = f"uploads/products/{data['product_img_url'].split('/')[-1]}"
         if len(image) > 100:
           continue
-        category_id = db_categories[data['category']]
+
+        try:
+            category_id = db_categories[data['category']]
+        except KeyError:
+            continue
         # print each variable to the console
 
         # insert the data into the table
@@ -68,6 +85,7 @@ with open('allo_products.jsonl') as file:
         )
 
         upload_image(data['product_img_url'])
+        print(f'Product {name} added to the database')
 # commit the changes to the database
 connection.commit()
 

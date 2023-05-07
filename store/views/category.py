@@ -12,8 +12,7 @@ class CategoryView(View):
         products = cache.get(key)
 
         if not products:
-            all_products = cache.get('all_products') or Product.objects.all()
-            products = all_products.filter(category__slug=category_slug)
+            products = Product.objects.filter(category__slug=category_slug)
             cache.set(key, products)
 
         sort_param = request.GET.get('sort')

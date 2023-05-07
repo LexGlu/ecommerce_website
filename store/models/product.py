@@ -10,6 +10,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=9, decimal_places=2)
     stock = models.PositiveIntegerField(default=0)
     image = models.ImageField(upload_to='uploads/products/', blank=True, null=True)
+    brand = models.CharField(max_length=128, blank=True, null=True)
 
     class Meta:
         ordering = ('-price', 'name', )
