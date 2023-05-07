@@ -11,9 +11,10 @@ Technologies used:
 - Docker and Docker Compose
 - PostgreSQL with Adminer
 - Celery with Redis as message broker
+- Redis as cache
 - Nginx
 - Gunicorn
-- AWS EC2
+- AWS EC2 instance
 - Godaddy domain
 - TLS certificate from Cloudflare
 - Python
@@ -26,7 +27,7 @@ Some of the features:
 - Product search
 - Product reviews
 - Dynamic shopping cart and checkout
-- Async email sending with Celery
+- Async email sending with Celery (using Gmail SMTP)
 - Order history
 - Admin panel
 - REST API using Django REST Framework
@@ -36,6 +37,38 @@ Project is deployed on AWS EC2 and can be accessed at https://lexglu.online
 
 ## Installation
 1. Clone the repository to your local machine
-2. Install Docker and Docker Compose
-3. Run `docker-compose up` in the project directory
-4. Go to http://localhost
+
+```
+git clone https://github.com/LexGlu/ecommerce_website.git
+```
+
+2. cd into the project directory
+3. Install Docker and Docker Compose
+4. Create a `.env` file in the project directory and add the following variables:
+```
+SECRET_KEY=your_secret_key
+DEBUG=<0 or 1>
+ALLOWED_HOSTS=localhost,your_domain
+
+#postgres
+POSTGRES_ENGINE=django.db.backends.postgresql
+POSTGRES_DATABASE=your_postgres_database
+POSTGRES_USER=your_postgres_user
+POSTGRES_PASSWORD=your_postgres_password
+POSTGRES_HOST=name_of_postgres_service
+POSTGRES_PORT=5432
+
+#celery
+CELERY_BROKER_URL=redis://redis:6379/<db_number_0>
+CELERY_RESULT_BACKEND=redis://redis:6379/<db_number_0>
+
+#email
+EMAIL_HOST_USER=your_email
+EMAIL_HOST_PASSWORD=your_email_password
+
+#redis
+REDIS_URL=redis://redis:6379/<db_number_1>
+```
+
+4. Run `docker-compose up -d` in the project directory
+5. Go to http://localhost
