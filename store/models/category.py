@@ -1,5 +1,6 @@
 from django.db import models
 from autoslug import AutoSlugField
+from django.core.cache import cache
 
 
 class Category(models.Model):
@@ -13,3 +14,13 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def brands(self):
+        """Returns a list of unique brands for products in this category sorted (a-z)."""
+        key = f'category_{self.slug}_brands'
+        brands = cache.get(key)
+        if not brands:
+            brands = sorted(set(product.brand for product in self.product_set.all() if product.brand))
+            cache.set(key, brands)
+        return brands

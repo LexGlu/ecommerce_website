@@ -674,7 +674,15 @@ label.star:before {
 /* for catalog sorting */
 
 .catalog-head {
+  margin-top: 10px;
+}
+
+.catalog-sort {
   text-align: right;
+}
+
+.catalog-filter {
+	text-align: left;
 }
 
 .catalog-sort-title,
@@ -702,4 +710,46 @@ label.star:before {
 .catalog-sort-item a:active,
 .catalog-sort-item a:focus {
   outline: none;
+}
+
+/* Product filter */
+
+.catalog-filter {
+	display: flex;
+	justify-content: space-between;
+}
+
+.brand-filter {
+	flex: 1;
+	margin-right: 20px;
+}
+
+.price-filter {
+	flex: 1;
+}
+
+.form-check {
+	margin-bottom: 10px;
+}
+
+.input-group {
+	margin-bottom: 10px;
+}
+
+.catalog-sort {
+	margin-top: 20px;
+}
+
+.catalog-sort-title {
+	font-weight: bold;
+}
+
+.catalog-sort-item {
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.catalog-sort-link {
+	text-decoration: none;
+	color: #000;
 }
