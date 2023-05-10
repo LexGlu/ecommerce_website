@@ -7,43 +7,55 @@
 {% endblock %}
 
 {% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.4/nouislider.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.6.4/nouislider.min.js"></script>
+
 <h3>{{ category.name }}</h3>
 
-    <div class="catalog-head" id="catalog-head">
-        <form id="filter-form" action="" method="GET">
-            <div class="catalog-filter">
-                <div class="brand-filter">
-                    <h4>Brands:</h4>
-                    {% for brand in category.brands %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="brand" value="{{ brand }}" id="brand-{{ brand }}">
-                        <label class="form-check-label" for="brand-{{ brand }}">{{ brand }}</label>
-                    </div>
-                    {% endfor %}
+    <form id="filter-form" action="" method="GET">
+      <div class="d-flex align-items-center">
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="filter-dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Filters
+          </button>
+          <div class="dropdown-menu" aria-labelledby="filter-dropdown" style="--bs-dropdown-min-width: 36rem" id="dropdown-menu">
+            <div class="catalog-filter px-3">
+              <div class="brand-filter" style="flex: 0.75">
+                <h4>Brands:</h4>
+                <div class="input-group mb-3">
+                  <input type="text" class="form-control" id="brand-search-input" placeholder="Search brand">
                 </div>
-                <div class="price-filter">
-                    <h4>Price Range:</h4>
-                    <div class="input-group">
-                        <span class="input-group-text">UAH</span>
-                        <input type="text" class="form-control" name="min_price" placeholder="Min Price">
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-text">UAH</span>
-                        <input type="text" class="form-control" name="max_price" placeholder="Max Price">
-                    </div>
-                    <button type="submit" class="btn btn-primary">OK</button>
+                {% for brand in category.brands %}
+                  <div class="form-check brand-item">
+                    <input class="form-check-input" type="checkbox" name="brand" value="{{ brand }}" id="brand-{{ brand }}">
+                    <label class="form-check-label" for="brand-{{ brand }}">{{ brand }}</label>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="price-filter">
+                <h4>Price Range:</h4>
+                <div class="input-group">
+                  <input type="text" class="form-control" name="min_price" placeholder="Min Price" data-price="{{category.min_price}}" id="min-price">
+                  <span class="input-group-text">—</span>
+                  <input type="text" class="form-control" name="max_price" placeholder="Max Price" data-price="{{category.max_price}}" id="max-price">
+                  <button type="submit" class="btn btn-primary" id="price-ok-btn">OK</button>
                 </div>
+                <div id="price-slider"></div>
+              </div>
             </div>
-
-            <select id="sort-select" class="form-select" aria-label="Default select example">
-                <option value="expensive">Price: High to Low</option>
-                <option value="cheap">Price: Low to High</option>
-                <option value="rating">Highest rating</option>
-            </select>
-        </form>
-
-    </div>
-
+          </div>
+        </div>
+        <div class="ms-auto">
+          <select id="sort-select" class="form-select" aria-label="Default select example">
+            <option value="expensive">Price: High to Low</option>
+            <option value="cheap">Price: Low to High</option>
+            <option value="rating">Highest rating</option>
+          </select>
+        </div>
+      </div>
+    </form>
+        
         <div class="row">
 
         {% if not page_obj %}
@@ -157,6 +169,88 @@
         </nav>
         {% endif %}
 
+
     <script src="{% static 'store/js/category_filter.js' %}"></script>
+    <script>
+      // JavaScript to handle brand search functionality and price slider
+      const brandLabels = document.querySelectorAll('.brand-filter .form-check-label');
+      const priceSlider = document.getElementById('price-slider');
+
+      // set slider min and max values to the values from url params
+      let urlParams = new URLSearchParams(window.location.search);
+      let minPrice = urlParams.get('min_price');
+      let maxPrice = urlParams.get('max_price');
+    
+      // Prevent dropdown from closing when clicking on a brand's label
+      brandLabels.forEach((label) => {
+        label.addEventListener('click', (event) => {
+          event.stopPropagation();
+        });
+      });
+    
+      // Prevent dropdown from closing when interacting with the price slider
+      priceSlider.addEventListener('click', (event) => {
+        event.stopPropagation();
+      });
+    
+      // JavaScript to handle brand search functionality
+      const brandSearchInput = document.getElementById('brand-search-input');
+      const brandItems = document.getElementsByClassName('brand-item');
+    
+      brandSearchInput.addEventListener('input', function () {
+        const searchValue = this.value.toLowerCase();
+    
+        Array.from(brandItems).forEach(function (item) {
+          const brandLabel = item.querySelector('label');
+          const brandName = brandLabel.textContent.toLowerCase();
+    
+          if (brandName.includes(searchValue)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+    
+      // JavaScript to handle price range slider
+      let minPriceInput = document.querySelector('input[name="min_price"]');
+      let maxPriceInput = document.querySelector('input[name="max_price"]');
+      let priceSliderInstance = noUiSlider.create(priceSlider, {
+        start: [minPrice || {{category.min_price}}, maxPrice || {{category.max_price}}], // Replace with the minimum and maximum price of products in the response's context
+        connect: true,
+        range: {
+          min: {{category.min_price}},
+          max: {{category.max_price}},
+        },
+      });
+  
+      // Update the price inputs when the slider changes
+      priceSliderInstance.on('update', function (values, handle) {
+        let minValue = values[0] !== {{category.min_price}} ? parseInt(values[0]) : {{category.min_price}};
+        let maxValue = values[1] !== {{category.max_price}} ? parseInt(values[1]) : {{category.max_price}};
+    
+        minPriceInput.value = minValue !== {{category.min_price}} ? minValue : '';
+        maxPriceInput.value = maxValue !== {{category.max_price}} ? maxValue : '';
+
+        minPriceInput.value = minPriceInput.value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        maxPriceInput.value = maxPriceInput.value.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      });
+
+      brandCheckboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function (event) {
+          applyFilters();
+          toggleDropdownFilter(true);
+        });
+      });
+
+      filterForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        applyPriceFilters();
+        toggleDropdownFilter(true);
+      });
+
+      let priceOkButton = document.getElementById('price-ok-btn');
+
+    </script>
 
 {% endblock %}

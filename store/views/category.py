@@ -49,7 +49,7 @@ class CategoryView(View):
         category = Category.objects.get(slug=category_slug)
 
         params_str = '&'.join(params)
-
+        
         paginator = Paginator(products, 12)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)

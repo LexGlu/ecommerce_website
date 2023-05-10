@@ -24,3 +24,19 @@ class Category(models.Model):
             brands = sorted(set(product.brand for product in self.product_set.all() if product.brand))
             cache.set(key, brands)
         return brands
+    
+    @property
+    def products(self):
+        return self.product_set.all()
+    
+    @property
+    def products_count(self):
+        return self.products.count()
+
+    @property
+    def min_price(self):
+        return min(product.price for product in self.products)
+    
+    @property
+    def max_price(self):
+        return max(product.price for product in self.products)
