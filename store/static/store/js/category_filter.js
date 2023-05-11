@@ -146,7 +146,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return checkbox.value;
       });
 
-    if (selectedBrands.length > 0) {
+    urlParams.delete('brand');
+
+    if (selectedBrands.length > 0) { 
       queryParams.push('brand=' + encodeURIComponent(selectedBrands.join(',')));
     }
 
@@ -156,16 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // add min_price to the URL if it's not empty
     if (minPriceInput.value !== '') {
-      urlParams.append('min_price', minPriceInput.value);
+      urlParams.append('min_price', minPriceInput.value.replace(/\s/g, ''));
     }
 
     // add max_price to the URL if it's not empty
     if (maxPriceInput.value !== '') {
-      urlParams.append('max_price', maxPriceInput.value);
-    }
-
-    if (sortSelect.value !== '') {
-      queryParams.push('sort=' + encodeURIComponent(sortSelect.value));
+      urlParams.append('max_price', maxPriceInput.value.replace(/\s/g, ''));
     }
 
     // add all query params to the array
@@ -177,7 +175,12 @@ document.addEventListener('DOMContentLoaded', function () {
     window.localStorage.setItem('dropdownMenuOpened', 'true');
 
 
+    
+    if (queryParams.length === 0) {
+      window.location.href = window.location.pathname;
+    } else {
     window.location.href = window.location.pathname + '?' + queryParams.join('&');
+    }
   }
 
   function applySort() {

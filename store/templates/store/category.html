@@ -187,11 +187,17 @@
           event.stopPropagation();
         });
       });
-    
-      // Prevent dropdown from closing when interacting with the price slider
-      priceSlider.addEventListener('click', (event) => {
+
+      // Prevent dropdown from closing when clicking within div class catalog-filter
+      const catalogFilter = document.querySelector('.catalog-filter');
+      catalogFilter.addEventListener('click', (event) => {
         event.stopPropagation();
       });
+
+      // Prevent dropdown from closing when interacting with the price slider
+      {% comment %} priceSlider.addEventListener('click', (event) => {
+        event.stopPropagation();
+      }); {% endcomment %}
     
       // JavaScript to handle brand search functionality
       const brandSearchInput = document.getElementById('brand-search-input');
@@ -249,7 +255,7 @@
         toggleDropdownFilter(true);
       });
 
-      let priceOkButton = document.getElementById('price-ok-btn');
+      
 
     </script>
 

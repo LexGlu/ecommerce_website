@@ -7,7 +7,7 @@ from django.http import JsonResponse
 import json
 import datetime
 from store.tasks import send_order_detail_email
-from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.csrf import csrf_exempt
 
 
 def cart(request):
@@ -89,7 +89,6 @@ def checkout(request):
 
     return render(request, 'store/checkout.html', {'order': order, 'redirect_url': redirect_url})
 
-@csrf_exempt
 def update_item(request):
     data = json.loads(request.body)
     product_id = data['productId']
