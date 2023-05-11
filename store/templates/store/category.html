@@ -234,6 +234,9 @@
       priceSliderInstance.on('update', function (values, handle) {
         let minValue = values[0] !== {{category.min_price}} ? parseInt(values[0]) : {{category.min_price}};
         let maxValue = values[1] !== {{category.max_price}} ? parseInt(values[1]) : {{category.max_price}};
+
+        let priceOkButton = document.getElementById('price-ok-btn');
+        priceOkButton.disabled = false;
     
         minPriceInput.value = minValue !== {{category.min_price}} ? minValue : '';
         maxPriceInput.value = maxValue !== {{category.max_price}} ? maxValue : '';
