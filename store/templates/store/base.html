@@ -130,7 +130,7 @@
         <div id="searchbar" class="form-inline my-2 my-lg-0">
             <form class="d-flex" action="{% url 'store:search' %}">
                 <input class="form-control me-2" type="search" placeholder="I'm searching for..." aria-label="Search"
-                name="query" required>
+                name="query" id="search-input" required>
                 <button class="btn btn-outline-primary product-view" type="submit">
                     <i class="fa fa-search"></i>
                 </button>
@@ -183,6 +183,8 @@
     </nav>
 
     <main>
+        <div id="search-results"></div>
+
       {% block content %}{% endblock %}
     </main>
     <footer style="margin-bottom: 20px">
@@ -203,5 +205,52 @@
     }
 
 </script>
+
+<script>
+    // Handle input change event
+    document.getElementById('search-input').addEventListener('input', function () {
+      // Get the search query from the input field
+      const query = this.value;
+  
+      // Make an AJAX request to the search view
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', '{% url 'store:search_elastic' %}?query=' + query, true);
+  
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          // Process the search results
+          const results = JSON.parse(xhr.responseText);
+          displayResults(results);
+        }
+      };
+  
+      xhr.send();
+    });
+  
+    // Update the search results on the page
+    function displayResults(results) {
+      const resultsContainer = document.getElementById('search-results');
+      resultsContainer.innerHTML = ''; // Clear previous results
+  
+        // Iterate over the results and create HTML elements
+        results.forEach(function (result) {
+            const item = document.createElement('div');
+            const link = document.createElement('a');
+
+            if (result.id) {
+                link.href = '/product/' + result.id + '/';
+                link.innerHTML = '<h3>' + result.name + '</h3><p>' + result.description + '</p>';
+                item.appendChild(link);
+                resultsContainer.appendChild(item);
+            } else {
+                console.log('Missing product ID for result:', result);
+            }
+        });
+    }
+  </script>
+  
+  
+
 </body>
 </html>

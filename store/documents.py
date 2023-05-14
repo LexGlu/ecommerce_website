@@ -24,6 +24,7 @@ class ProductDocument(Document):
         
         # The fields of the model you want to be indexed in Elasticsearch
         fields = [
+            'id',
             'name',
             'description',
             'brand',
