@@ -3,6 +3,7 @@ from store.models import Product
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.core.cache import cache
+from store.documents import ProductDocument
 
 
 def search_product(request):
@@ -27,5 +28,3 @@ def search_product(request):
     page_obj = paginator.get_page(page_number)
     context = {'page_obj': page_obj, 'query': query, 'products_count': products_count}
     return render(request, 'store/search.html', context)
-
-
