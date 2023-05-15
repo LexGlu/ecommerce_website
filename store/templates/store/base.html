@@ -127,15 +127,16 @@
             </li>
           </ul>
 
-        <div id="searchbar" class="form-inline my-2 my-lg-0">
+        <div id="searchbar" class="form-inline my-2 my-lg-0 flex-grow-1" style="padding: 0 10px;">
             <form class="d-flex" action="{% url 'store:search' %}">
-                <input class="form-control me-2" type="search" placeholder="I'm searching for..." aria-label="Search"
-                name="query" id="search-input" required>
+                <input class="form-control me-2" type="search" placeholder="I'm searching for..." aria-label="Search" name="query" id="search-input" required>
                 <button class="btn btn-outline-primary product-view" type="submit">
                     <i class="fa fa-search"></i>
                 </button>
             </form>
+            <div id="search-results"></div>
         </div>
+        
 
 
 
@@ -183,8 +184,6 @@
     </nav>
 
     <main>
-        <div id="search-results"></div>
-
       {% block content %}{% endblock %}
     </main>
     <footer style="margin-bottom: 20px">
@@ -210,7 +209,7 @@
     // Handle input change event
     document.getElementById('search-input').addEventListener('input', function () {
       // Get the search query from the input field
-      const query = this.value;
+      const query = this.value.trim();
   
       // Make an AJAX request to the search view
 
@@ -227,12 +226,31 @@
   
       xhr.send();
     });
+
+    // Add event listeners for clicks outside search results or searchbar
+    document.addEventListener('click', function (event) {
+        const searchResults = document.getElementById('search-results');
+        const searchBar = document.getElementById('searchbar');
+    
+        if (!searchResults.contains(event.target) && !searchBar.contains(event.target)) {
+        searchResults.style.display = 'none';
+        } else if (searchBar.contains(event.target)) {
+            if (searchResults.innerHTML !== '') {
+                searchResults.style.display = 'block';
+            }
+        }
+    });
   
     // Update the search results on the page
     function displayResults(results) {
-      const resultsContainer = document.getElementById('search-results');
-      resultsContainer.innerHTML = ''; // Clear previous results
-  
+        const resultsContainer = document.getElementById('search-results');
+        resultsContainer.innerHTML = ''; // Clear previous results
+        
+        if (results.length === 0) {
+            resultsContainer.style.display = 'none'; // Hide search results if empty
+            return;
+        }
+
         // Iterate over the results and create HTML elements
         results.forEach(function (result) {
             const item = document.createElement('div');
@@ -240,14 +258,17 @@
 
             if (result.id) {
                 link.href = '/product/' + result.id + '/';
-                link.innerHTML = '<h3>' + result.name + '</h3><p>' + result.description + '</p>';
+                link.innerHTML = '<p>' + result.name + '</p>';
                 item.appendChild(link);
                 resultsContainer.appendChild(item);
             } else {
                 console.log('Missing product ID for result:', result);
             }
         });
+
+        resultsContainer.style.display = 'block'; // Display the search results
     }
+
   </script>
   
   

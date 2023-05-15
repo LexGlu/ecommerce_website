@@ -21,6 +21,7 @@ services:
                python manage.py loaddata /usr/src/app/db_dump/data.json &&
                echo 'False' > db_dump/db_empty;
              fi &&
+             apt install procps nano -y &&
              celery multi start worker1 -A ecom_website -l info &&
              gunicorn ecom_website.wsgi:application --bind 0.0.0.0:8000"
     volumes:

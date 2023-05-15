@@ -754,3 +754,40 @@ label.star:before {
 	text-decoration: none;
 	color: #000;
 }
+
+#searchbar {
+	position: relative; /* Add relative positioning */
+  }
+  
+#search-results {
+position: absolute;
+margin-left: 10px;
+top: calc(100% + 10px);
+left: 0;
+width: calc(100% - 68px);
+background-color: #fff;
+border: 1px solid #ccc;
+border-top: none;
+border-radius: 0.375rem; /* Add border radius */
+z-index: 10;
+padding: 10px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+display: none;
+}
+
+#search-results a {
+border-radius: 0.375rem;
+display: block;
+padding: 8px;
+color: #333;
+text-decoration: none;
+}
+
+#search-results a:hover {
+background-color: #f4f4f4;
+}
+
+#search-results p {
+margin-bottom: 0;
+}
+  
