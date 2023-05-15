@@ -12,21 +12,22 @@ Technologies used:
 - PostgreSQL with Adminer
 - Celery with Redis as message broker
 - Redis as cache
-- Nginx
-- Gunicorn
+- Nginx as reverse proxy
+- Gunicorn as WSGI server
+- Elasticsearch for real-time product search
 - AWS EC2 instance
 - Godaddy domain
 - TLS certificate from Cloudflare
 - Python
+- AJAX for async requests to the server and Elasticsearch
 - HTML, CSS, Bootstrap, JS
 
 Some of the features:
 - User registration and login
-- Product list page
-- Product detail page
-- Product search
+- Product catalog with filtering and sorting
+- Real-time product search
+- Interactive shopping cart and checkout
 - Product reviews
-- Dynamic shopping cart and checkout
 - Async email sending with Celery (using Gmail SMTP)
 - Order history
 - Admin panel
@@ -58,16 +59,19 @@ POSTGRES_PASSWORD=your_postgres_password
 POSTGRES_HOST=name_of_postgres_service
 POSTGRES_PORT=5432
 
-#celery
+#redis as celery's message broker
 CELERY_BROKER_URL=redis://redis:6379/<db_number_0>
 CELERY_RESULT_BACKEND=redis://redis:6379/<db_number_0>
 
-#email
+#email sending with celery and gmail smtp
 EMAIL_HOST_USER=your_email
 EMAIL_HOST_PASSWORD=your_email_password
 
-#redis
+#redis as cache
 REDIS_URL=redis://redis:6379/<db_number_1>
+
+#elasticsearch
+ELASTICSEARCH_URL=elasticsearch:9200
 ```
 
 4. Run `docker-compose up -d` in the project directory
