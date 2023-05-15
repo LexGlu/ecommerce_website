@@ -3,9 +3,9 @@ from store.models import Product
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.core.cache import cache
-from store.documents import ProductDocument
 from django.http import JsonResponse
-from elasticsearch_dsl import Q as DSLQ
+from functools import reduce
+from operator import and_
 
 def search_product(request):
     query = request.GET.get('query')
@@ -31,28 +31,43 @@ def search_product(request):
     return render(request, 'store/search.html', context)
 
 
-def search_elastic(request):
+def search_rt(request):
     query = request.GET.get('query', '').lower()
+    q_string = f'?{query}'
     
     if not query:
         return JsonResponse([], safe=False)
+    
+    keywords = query.split()
+    
+    
+    # AJAX request to postgreSQL database
+    
+    products = cache.get(q_string)
+    
+    if not products:
+        products = cache.get('all_products')
+        if not products:
+            products = Product.objects.all()
+            cache.set('all_products', products)
+            
+        filters = [
+            Q(name__icontains=keyword) |
+            Q(description__icontains=keyword) |
+            Q(category__name__icontains=keyword)
+            for keyword in keywords
+        ]
+        
+        products = products.filter(reduce(and_, filters)).distinct()
+        cache.set(q_string, products[:5])
 
-    # Split the query string into individual words
-    words = query.split()
-
-    # Construct a list of wildcard queries for each word in the query
-    wildcard_queries = [
-        DSLQ('wildcard', name='*' + word + '*') |
-        DSLQ('wildcard', description='*' + word + '*') |
-        DSLQ('wildcard', brand='*' + word + '*')
-        for word in words
-    ]
-
-    # Perform a search query on the Elasticsearch index where name, description, or brand fields contain all of the words
-    products = ProductDocument.search().query(
-        DSLQ('bool', must=wildcard_queries)
-    )
-
-    results = [product.to_dict() for product in products[0:5]]
+    # Serialize products to a JSON serializable format
+    results = []
+    for product in products[:5]:
+        serialized_product = {
+            'id': product.pk,
+            'name': product.name,
+        }
+        results.append(serialized_product)    
 
     return JsonResponse(results, safe=False)
