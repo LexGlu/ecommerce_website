@@ -84,7 +84,7 @@ with open('allo_products.jsonl') as file:
             f"VALUES ('{name}', '{description}', {digital}, {price}, {stock}, '{image}', {category_id});"
         )
 
-        upload_image(data['product_img_url'])
+        asyncio.run(upload_image(data['product_img_url']))
         print(f'Product {name} added to the database')
 # commit the changes to the database
 connection.commit()

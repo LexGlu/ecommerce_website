@@ -77,21 +77,9 @@ services:
     volumes:
       - redis_data:/data
 
-  elasticsearch:
-    image: elasticsearch:7.17.10 # version 8 is not supported by django-elasticsearch-dsl
-    container_name: elasticsearch
-    restart: always
-    environment:
-      - discovery.type=single-node
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
-
 volumes:
   postgres_data:
   static_volume:
   media_volume:
   db_dump:
   redis_data:
-  elasticsearch_data:

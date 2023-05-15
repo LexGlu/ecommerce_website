@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'rest_framework',
     'rest_framework.authtoken',
-    'django_elasticsearch_dsl',
 ]
 
 REST_FRAMEWORK = {
@@ -176,9 +175,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
-ELASTICSEARCH_DSL = {
-    'default': {
-        'hosts': os.environ.get('ELASTICSEARCH_HOST', 'elasticsearch:9200')
-    },
-}
