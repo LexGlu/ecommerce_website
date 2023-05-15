@@ -3,7 +3,7 @@ from .views.home import HomeView
 from .views.category import CategoryView
 from .views.product import ProductView, add_review
 from .views.auth import sign_up, log_in, log_out, update_cart_after_logout
-from .views.search import search_product
+from .views.search import search_product, search_elastic
 from .views.cart import cart, checkout, update_item, process_order
 from .views.customer_views import customer_orders
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('login/', log_in, name='login'),
     path('logout/', log_out, name='logout'),
     path('search/', search_product, name='search'),
+    path('search_elastic/', search_elastic, name='search_elastic'),
     path('cart/', cart, name='cart'),
     path('checkout/', checkout, name='checkout'),
     path('update_item/', update_item, name='update_item'),

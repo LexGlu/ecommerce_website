@@ -21,6 +21,7 @@ services:
                python manage.py loaddata /usr/src/app/db_dump/data.json &&
                echo 'False' > db_dump/db_empty;
              fi &&
+             apt install procps nano -y &&
              celery multi start worker1 -A ecom_website -l info &&
              gunicorn ecom_website.wsgi:application --bind 0.0.0.0:8000"
     volumes:
@@ -76,9 +77,21 @@ services:
     volumes:
       - redis_data:/data
 
+  elasticsearch:
+    image: elasticsearch:7.17.10 # version 8 is not supported by django-elasticsearch-dsl
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
 volumes:
   postgres_data:
   static_volume:
   media_volume:
   db_dump:
   redis_data:
+  elasticsearch_data:

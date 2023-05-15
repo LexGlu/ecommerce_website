@@ -132,7 +132,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // set dropdownMenuOpened to true in localStorage so that the dropdown menu is opened when the page is reloaded
     localStorage.setItem('dropdownMenuOpened', 'true');
 
-    window.location.href = window.location.pathname + '?' + queryParams.join('&');
+    if (queryParams.length === 0) {
+      window.location.href = window.location.pathname;
+    } else {
+      window.location.href = window.location.pathname + '?' + queryParams.join('&');
+    }
   }
 
   function applyFilters() {

@@ -3,7 +3,9 @@ from store.models import Product
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.core.cache import cache
-
+from store.documents import ProductDocument
+from django.http import JsonResponse
+from elasticsearch_dsl import Q as DSLQ
 
 def search_product(request):
     query = request.GET.get('query')
@@ -29,3 +31,28 @@ def search_product(request):
     return render(request, 'store/search.html', context)
 
 
+def search_elastic(request):
+    query = request.GET.get('query', '').lower()
+    
+    if not query:
+        return JsonResponse([], safe=False)
+
+    # Split the query string into individual words
+    words = query.split()
+
+    # Construct a list of wildcard queries for each word in the query
+    wildcard_queries = [
+        DSLQ('wildcard', name='*' + word + '*') |
+        DSLQ('wildcard', description='*' + word + '*') |
+        DSLQ('wildcard', brand='*' + word + '*')
+        for word in words
+    ]
+
+    # Perform a search query on the Elasticsearch index where name, description, or brand fields contain all of the words
+    products = ProductDocument.search().query(
+        DSLQ('bool', must=wildcard_queries)
+    )
+
+    results = [product.to_dict() for product in products[0:5]]
+
+    return JsonResponse(results, safe=False)
