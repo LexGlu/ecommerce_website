@@ -36,6 +36,13 @@ Some of the features:
 
 Project is deployed on AWS EC2 and can be accessed at https://lexglu.online
 
+## Demo
+![ecom-1](gifs/ecom-1.gif)
+![ecom-2](gifs/ecom-2.gif)
+![ecom-3](gifs/ecom-3.gif)
+![ecom-4](gifs/ecom-4.gif)
+![ecom-5](gifs/ecom-5.gif)
+
 ## Installation
 1. Clone the repository to your local machine
 

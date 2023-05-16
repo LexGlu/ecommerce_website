@@ -254,6 +254,7 @@ def process_order(request):
         customer, created = Customer.objects.get_or_create(guest_email=guest_email)
         customer.guest_name = guest_name
         customer.guest_phone = guest_phone
+        customer.guest_email = guest_email
         customer.save()
 
         order = Order.objects.create(
