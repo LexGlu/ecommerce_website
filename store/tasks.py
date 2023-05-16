@@ -40,5 +40,10 @@ def send_order_detail_email(order_id):
                'Pineapple Team'
 
     sender = settings.EMAIL_HOST_USER
-    recipient = order.customer.user.email
+    
+    if order.customer.user:
+        recipient = order.customer.user.email
+    else:
+        recipient = order.customer.guest_email
+    
     send_mail(subject, message, sender, [recipient], fail_silently=False)
