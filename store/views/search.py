@@ -33,11 +33,11 @@ def search_product(request):
 
 def search_rt(request):
     query = request.GET.get('query', '').lower()
-    q_string = f'?{query}'
     
     if not query:
         return JsonResponse([], safe=False)
     
+    q_string = f'?rt-{query}'
     keywords = query.split()
     
     
